@@ -20,6 +20,11 @@ var MinimalPresetYml string
 //go:embed preset-gnosis.chain.yml
 var GnosisPresetYml string
 
+// creeper2 presets
+//
+//go:embed preset-creeper2.chain.yml
+var Creeper2PresetYml string
+
 // chain configs
 //
 //go:embed mainnet.chain.yml
@@ -36,6 +41,11 @@ var HoleskyChainYml string
 
 //go:embed gnosis.chain.yml
 var GnosisChainYml string
+
+// creeper2 config
+//
+//go:embed creeper2.chain.yml
+var Creeper2ChainYml string
 
 // validator names
 //
