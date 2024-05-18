@@ -1,7 +1,7 @@
 # Creeper2 config
 
-CONFIG_NAME: under-devnet
-PRESET_BASE: under-devnet
+CONFIG_NAME: creeper2
+PRESET_BASE: creeper2
 
 DEPOSIT_CHAIN_ID: 27882
 DEPOSIT_NETWORK_ID: 27882
