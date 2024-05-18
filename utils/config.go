@@ -43,6 +43,8 @@ func ReadConfig(cfg *types.Config, path string) error {
 			err = yaml.Unmarshal([]byte(config.HoleskyChainYml), &chainConfig)
 		case "gnosis":
 			err = yaml.Unmarshal([]byte(config.GnosisChainYml), &chainConfig)
+		case "creeper2":
+			err = yaml.Unmarshal([]byte(config.Creeper2ChainYml), &chainConfig)
 		default:
 			return fmt.Errorf("tried to set known chain-config, but unknown chain-name")
 		}
@@ -88,6 +90,8 @@ func ReadConfig(cfg *types.Config, path string) error {
 			err = yaml.Unmarshal([]byte(config.MinimalPresetYml), &chainPreset)
 		case "gnosis":
 			err = yaml.Unmarshal([]byte(config.GnosisPresetYml), &chainPreset)
+		case "creeper2":
+			err = yaml.Unmarshal([]byte(config.Creeper2PresetYml), &chainPreset)
 		default:
 			return fmt.Errorf("tried to use unknown chain-preset: %v", chainConfig.PresetBase)
 		}
@@ -114,6 +118,8 @@ func ReadConfig(cfg *types.Config, path string) error {
 			cfg.Chain.GenesisTimestamp = 1616508000
 		case "sepolia":
 			cfg.Chain.GenesisTimestamp = 1655733600
+		case "creeper2":
+			cfg.Chain.GenesisTimestamp = 1709016906
 		default:
 			cfg.Chain.GenesisTimestamp = uint64(cfg.Chain.Config.MinGenesisTime) + cfg.Chain.Config.GenesisDelay
 		}
@@ -126,6 +132,8 @@ func ReadConfig(cfg *types.Config, path string) error {
 			cfg.Frontend.ValidatorNamesYaml = "~internal/sepolia.names.yml"
 		case "holesky":
 			cfg.Frontend.ValidatorNamesYaml = "~internal/holesky.names.yml"
+		case "creeper2":
+			cfg.Frontend.ValidatorNamesYaml = "~internal/creeper2.names.yml"
 		}
 	}
 
