@@ -1,0 +1,94 @@
+logging:
+  #outputLevel: "info"
+  #outputStderr: false
+
+  #filePath: "explorer.log"
+  #fileLevel: "warn"
+
+# Chain network configuration
+chain:
+  name: "creeper2"
+  #genesisTimestamp: 1688126460
+  #configPath: "../ephemery/config.yaml"
+  displayName: "Over - Creeper2"
+
+# HTTP Server configuration
+server:
+  host: "localhost" # Address to listen on
+  port: "8080" # Port to listen on
+
+frontend:
+  enabled: true # Enable or disable to web frontend
+  debug: false
+  minimize: false # minimize html templates
+
+  # Name of the site, displayed in the title tag
+  siteName: "OverDora - Creeper2"
+  siteSubtitle: "Beacon Explorer for Creeper2"
+
+  # link to EL Explorer
+  ethExplorerLink: "https://creeper.view.over.network/"
+
+  # file or inventory url to load validator names from
+  validatorNamesYaml: "./config/creeper2.names.yml"
+  # validatorNamesInventory: ""
+
+beaconapi:
+  # CL Client RPC
+  endpoint: "http://34.101.59.22:3500"
+
+  # local cache for page models
+  localCacheSize: 100 # 100MB
+
+  # remote cache for page models
+  # redisCacheAddr: ""
+  # redisCachePrefix: ""
+
+# indexer keeps track of the latest epochs in memory.
+indexer:
+  # max number of epochs to keep in memory
+  inMemoryEpochs: 3
+
+  # disable synchronizing and everything that writes to the db (indexer just maintains local cache)
+  disableIndexWriter: false
+
+  # number of seconds to wait between each epoch (don't overload CL client)
+  syncEpochCooldown: 2
+
+  # maximum number of parallel validator set requests (might cause high memory usage)
+  maxParallelValidatorSetRequests: 1
+
+# blob storage configuration
+blobstore:
+  # persistence mode: none, db, fs, aws
+  # persistenceMode: "none"
+  # nameTemplate: ""
+  # fs:
+  #   path: ""
+  # aws:
+  #   accessKey: ""
+  #   secretKey: ""
+  #   s3Region: "eu-central-1"
+  #   s3Bucket: ""
+
+# database configuration
+database:
+  engine: "pgsql" # sqlite / pgsql
+
+  # sqlite settings
+  # sqlite:
+  #   file: "./explorer-db.sqlite"
+
+  # pgsql settings
+  pgsql:
+    host: "127.0.0.1"
+    port: 5432
+    user: ""
+    password: ""
+    name: ""
+  # pgsqlWriter: # optional separate writer connection (used for replication setups)
+  #   host: ""
+  #   port: 5432
+  #   user: ""
+  #   password: ""
+  #   name: ""
