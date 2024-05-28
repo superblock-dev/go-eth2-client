@@ -32,11 +32,14 @@ type beaconStateYAML struct {
 	BlockRoots                   []string                  `json:"block_roots"`
 	StateRoots                   []string                  `json:"state_roots"`
 	HistoricalRoots              []string                  `json:"historical_roots"`
+	RewardAdjustmentFactor       uint64                    `json:"reward_adjustment_factor"`
 	ETH1Data                     *phase0.ETH1Data          `json:"eth1_data"`
 	ETH1DataVotes                []*phase0.ETH1Data        `json:"eth1_data_votes"`
 	ETH1DepositIndex             uint64                    `json:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator       `json:"validators"`
 	Balances                     []uint64                  `json:"balances"`
+	PreviousEpochReserve         uint64                    `json:"previous_epoch_reserve"`
+	CurrentEpochReserve          uint64                    `json:"current_epoch_reserve"`
 	RANDAOMixes                  []string                  `json:"randao_mixes"`
 	Slashings                    []uint64                  `json:"slashings"`
 	PreviousEpochParticipation   []uint8                   `json:"previous_epoch_participation"`
@@ -48,6 +51,7 @@ type beaconStateYAML struct {
 	InactivityScores             []uint64                  `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee     `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee     `json:"next_sync_committee"`
+	BailoutScores                []uint64                  `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader   `json:"latest_execution_payload_header"`
 	NextWithdrawalIndex          uint64                    `json:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex uint64                    `json:"next_withdrawal_validator_index"`
@@ -88,6 +92,10 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 	for i := range s.CurrentEpochParticipation {
 		currentEpochParticipation[i] = uint8(s.CurrentEpochParticipation[i])
 	}
+	bailoutScores := make([]uint64, len(s.BailoutScores))
+	for i := range s.BailoutScores {
+		bailoutScores[i] = uint64(s.BailoutScores[i])
+	}
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconStateYAML{
 		GenesisTime:                  s.GenesisTime,
 		GenesisValidatorsRoot:        fmt.Sprintf("%#x", s.GenesisValidatorsRoot),
@@ -97,11 +105,14 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 		BlockRoots:                   blockRoots,
 		StateRoots:                   stateRoots,
 		HistoricalRoots:              historicalRoots,
+		RewardAdjustmentFactor:       s.RewardAdjustmentFactor,
 		ETH1Data:                     s.ETH1Data,
 		ETH1DataVotes:                s.ETH1DataVotes,
 		ETH1DepositIndex:             s.ETH1DepositIndex,
 		Validators:                   s.Validators,
 		Balances:                     balances,
+		PreviousEpochReserve:         s.PreviousEpochReserve,
+		CurrentEpochReserve:          s.CurrentEpochReserve,
 		RANDAOMixes:                  randaoMixes,
 		Slashings:                    slashings,
 		PreviousEpochParticipation:   previousEpochParticipation,
@@ -113,6 +124,7 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 		InactivityScores:             s.InactivityScores,
 		CurrentSyncCommittee:         s.CurrentSyncCommittee,
 		NextSyncCommittee:            s.NextSyncCommittee,
+		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: s.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          uint64(s.NextWithdrawalIndex),
 		NextWithdrawalValidatorIndex: uint64(s.NextWithdrawalValidatorIndex),
