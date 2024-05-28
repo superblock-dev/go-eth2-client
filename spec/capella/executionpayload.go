@@ -30,59 +30,62 @@ import (
 
 // ExecutionPayload represents an execution layer payload.
 type ExecutionPayload struct {
-	ParentHash    phase0.Hash32              `ssz-size:"32"`
-	FeeRecipient  bellatrix.ExecutionAddress `ssz-size:"20"`
-	StateRoot     [32]byte                   `ssz-size:"32"`
-	ReceiptsRoot  [32]byte                   `ssz-size:"32"`
-	LogsBloom     [256]byte                  `ssz-size:"256"`
-	PrevRandao    [32]byte                   `ssz-size:"32"`
-	BlockNumber   uint64
-	GasLimit      uint64
-	GasUsed       uint64
-	Timestamp     uint64
-	ExtraData     []byte                  `ssz-max:"32"`
-	BaseFeePerGas [32]byte                `ssz-size:"32"`
-	BlockHash     phase0.Hash32           `ssz-size:"32"`
-	Transactions  []bellatrix.Transaction `ssz-max:"1048576,1073741824" ssz-size:"?,?"`
-	Withdrawals   []*Withdrawal           `ssz-max:"16"`
+	ParentHash     phase0.Hash32              `ssz-size:"32"`
+	FeeRecipient   bellatrix.ExecutionAddress `ssz-size:"20"`
+	StateRoot      [32]byte                   `ssz-size:"32"`
+	CheckpointRoot [32]byte                   `ssz-size:"32"`
+	ReceiptsRoot   [32]byte                   `ssz-size:"32"`
+	LogsBloom      [256]byte                  `ssz-size:"256"`
+	PrevRandao     [32]byte                   `ssz-size:"32"`
+	BlockNumber    uint64
+	GasLimit       uint64
+	GasUsed        uint64
+	Timestamp      uint64
+	ExtraData      []byte                  `ssz-max:"32"`
+	BaseFeePerGas  [32]byte                `ssz-size:"32"`
+	BlockHash      phase0.Hash32           `ssz-size:"32"`
+	Transactions   []bellatrix.Transaction `ssz-max:"1048576,1073741824" ssz-size:"?,?"`
+	Withdrawals    []*Withdrawal           `ssz-max:"16"`
 }
 
 // executionPayloadJSON is the spec representation of the struct.
 type executionPayloadJSON struct {
-	ParentHash    string        `json:"parent_hash"`
-	FeeRecipient  string        `json:"fee_recipient"`
-	StateRoot     string        `json:"state_root"`
-	ReceiptsRoot  string        `json:"receipts_root"`
-	LogsBloom     string        `json:"logs_bloom"`
-	PrevRandao    string        `json:"prev_randao"`
-	BlockNumber   string        `json:"block_number"`
-	GasLimit      string        `json:"gas_limit"`
-	GasUsed       string        `json:"gas_used"`
-	Timestamp     string        `json:"timestamp"`
-	ExtraData     string        `json:"extra_data"`
-	BaseFeePerGas string        `json:"base_fee_per_gas"`
-	BlockHash     string        `json:"block_hash"`
-	Transactions  []string      `json:"transactions"`
-	Withdrawals   []*Withdrawal `json:"withdrawals"`
+	ParentHash     string        `json:"parent_hash"`
+	FeeRecipient   string        `json:"fee_recipient"`
+	StateRoot      string        `json:"state_root"`
+	CheckpointRoot string        `json:"checkpoint_root"`
+	ReceiptsRoot   string        `json:"receipts_root"`
+	LogsBloom      string        `json:"logs_bloom"`
+	PrevRandao     string        `json:"prev_randao"`
+	BlockNumber    string        `json:"block_number"`
+	GasLimit       string        `json:"gas_limit"`
+	GasUsed        string        `json:"gas_used"`
+	Timestamp      string        `json:"timestamp"`
+	ExtraData      string        `json:"extra_data"`
+	BaseFeePerGas  string        `json:"base_fee_per_gas"`
+	BlockHash      string        `json:"block_hash"`
+	Transactions   []string      `json:"transactions"`
+	Withdrawals    []*Withdrawal `json:"withdrawals"`
 }
 
 // executionPayloadYAML is the spec representation of the struct.
 type executionPayloadYAML struct {
-	ParentHash    string        `yaml:"parent_hash"`
-	FeeRecipient  string        `yaml:"fee_recipient"`
-	StateRoot     string        `yaml:"state_root"`
-	ReceiptsRoot  string        `yaml:"receipts_root"`
-	LogsBloom     string        `yaml:"logs_bloom"`
-	PrevRandao    string        `yaml:"prev_randao"`
-	BlockNumber   uint64        `yaml:"block_number"`
-	GasLimit      uint64        `yaml:"gas_limit"`
-	GasUsed       uint64        `yaml:"gas_used"`
-	Timestamp     uint64        `yaml:"timestamp"`
-	ExtraData     string        `yaml:"extra_data"`
-	BaseFeePerGas string        `yaml:"base_fee_per_gas"`
-	BlockHash     string        `yaml:"block_hash"`
-	Transactions  []string      `yaml:"transactions"`
-	Withdrawals   []*Withdrawal `yaml:"withdrawals"`
+	ParentHash     string        `yaml:"parent_hash"`
+	FeeRecipient   string        `yaml:"fee_recipient"`
+	StateRoot      string        `yaml:"state_root"`
+	CheckpointRoot string        `yaml:"checkpoint_root"`
+	ReceiptsRoot   string        `yaml:"receipts_root"`
+	LogsBloom      string        `yaml:"logs_bloom"`
+	PrevRandao     string        `yaml:"prev_randao"`
+	BlockNumber    uint64        `yaml:"block_number"`
+	GasLimit       uint64        `yaml:"gas_limit"`
+	GasUsed        uint64        `yaml:"gas_used"`
+	Timestamp      uint64        `yaml:"timestamp"`
+	ExtraData      string        `yaml:"extra_data"`
+	BaseFeePerGas  string        `yaml:"base_fee_per_gas"`
+	BlockHash      string        `yaml:"block_hash"`
+	Transactions   []string      `yaml:"transactions"`
+	Withdrawals    []*Withdrawal `yaml:"withdrawals"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -106,21 +109,22 @@ func (e *ExecutionPayload) MarshalJSON() ([]byte, error) {
 	baseFeePerGas := new(big.Int).SetBytes(baseFeePerGasBEBytes[:])
 
 	return json.Marshal(&executionPayloadJSON{
-		ParentHash:    fmt.Sprintf("%#x", e.ParentHash),
-		FeeRecipient:  e.FeeRecipient.String(),
-		StateRoot:     fmt.Sprintf("%#x", e.StateRoot),
-		ReceiptsRoot:  fmt.Sprintf("%#x", e.ReceiptsRoot),
-		LogsBloom:     fmt.Sprintf("%#x", e.LogsBloom),
-		PrevRandao:    fmt.Sprintf("%#x", e.PrevRandao),
-		BlockNumber:   strconv.FormatUint(e.BlockNumber, 10),
-		GasLimit:      strconv.FormatUint(e.GasLimit, 10),
-		GasUsed:       strconv.FormatUint(e.GasUsed, 10),
-		Timestamp:     strconv.FormatUint(e.Timestamp, 10),
-		ExtraData:     extraData,
-		BaseFeePerGas: baseFeePerGas.String(),
-		BlockHash:     fmt.Sprintf("%#x", e.BlockHash),
-		Transactions:  transactions,
-		Withdrawals:   e.Withdrawals,
+		ParentHash:     fmt.Sprintf("%#x", e.ParentHash),
+		FeeRecipient:   e.FeeRecipient.String(),
+		StateRoot:      fmt.Sprintf("%#x", e.StateRoot),
+		CheckpointRoot: fmt.Sprintf("%#x", e.CheckpointRoot),
+		ReceiptsRoot:   fmt.Sprintf("%#x", e.ReceiptsRoot),
+		LogsBloom:      fmt.Sprintf("%#x", e.LogsBloom),
+		PrevRandao:     fmt.Sprintf("%#x", e.PrevRandao),
+		BlockNumber:    strconv.FormatUint(e.BlockNumber, 10),
+		GasLimit:       strconv.FormatUint(e.GasLimit, 10),
+		GasUsed:        strconv.FormatUint(e.GasUsed, 10),
+		Timestamp:      strconv.FormatUint(e.Timestamp, 10),
+		ExtraData:      extraData,
+		BaseFeePerGas:  baseFeePerGas.String(),
+		BlockHash:      fmt.Sprintf("%#x", e.BlockHash),
+		Transactions:   transactions,
+		Withdrawals:    e.Withdrawals,
 	})
 }
 
@@ -171,6 +175,18 @@ func (e *ExecutionPayload) unpack(data *executionPayloadJSON) error {
 		return errors.New("incorrect length for state root")
 	}
 	copy(e.StateRoot[:], stateRoot)
+
+	if data.CheckpointRoot == "" {
+		return errors.New("checkpoint root missing")
+	}
+	checkpointRoot, err := hex.DecodeString(strings.TrimPrefix(data.CheckpointRoot, "0x"))
+	if err != nil {
+		return errors.Wrap(err, "invalid value for checkpoint root")
+	}
+	if len(checkpointRoot) != 32 {
+		return errors.New("incorrect length for checkpoint root")
+	}
+	copy(e.CheckpointRoot[:], checkpointRoot)
 
 	if data.ReceiptsRoot == "" {
 		return errors.New("receipts root missing")
@@ -365,21 +381,22 @@ func (e *ExecutionPayload) MarshalYAML() ([]byte, error) {
 	baseFeePerGas := new(big.Int).SetBytes(baseFeePerGasBEBytes[:])
 
 	yamlBytes, err := yaml.MarshalWithOptions(&executionPayloadYAML{
-		ParentHash:    fmt.Sprintf("%#x", e.ParentHash),
-		FeeRecipient:  e.FeeRecipient.String(),
-		StateRoot:     fmt.Sprintf("%#x", e.StateRoot),
-		ReceiptsRoot:  fmt.Sprintf("%#x", e.ReceiptsRoot),
-		LogsBloom:     fmt.Sprintf("%#x", e.LogsBloom),
-		PrevRandao:    fmt.Sprintf("%#x", e.PrevRandao),
-		BlockNumber:   e.BlockNumber,
-		GasLimit:      e.GasLimit,
-		GasUsed:       e.GasUsed,
-		Timestamp:     e.Timestamp,
-		ExtraData:     extraData,
-		BaseFeePerGas: baseFeePerGas.String(),
-		BlockHash:     fmt.Sprintf("%#x", e.BlockHash),
-		Transactions:  transactions,
-		Withdrawals:   e.Withdrawals,
+		ParentHash:     fmt.Sprintf("%#x", e.ParentHash),
+		FeeRecipient:   e.FeeRecipient.String(),
+		StateRoot:      fmt.Sprintf("%#x", e.StateRoot),
+		CheckpointRoot: fmt.Sprintf("%#x", e.CheckpointRoot),
+		ReceiptsRoot:   fmt.Sprintf("%#x", e.ReceiptsRoot),
+		LogsBloom:      fmt.Sprintf("%#x", e.LogsBloom),
+		PrevRandao:     fmt.Sprintf("%#x", e.PrevRandao),
+		BlockNumber:    e.BlockNumber,
+		GasLimit:       e.GasLimit,
+		GasUsed:        e.GasUsed,
+		Timestamp:      e.Timestamp,
+		ExtraData:      extraData,
+		BaseFeePerGas:  baseFeePerGas.String(),
+		BlockHash:      fmt.Sprintf("%#x", e.BlockHash),
+		Transactions:   transactions,
+		Withdrawals:    e.Withdrawals,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err
