@@ -3,11 +3,6 @@
 path_to_go_eth2_client=$(pwd)
 path_to_fastssz="${1}"
 
-# Remove ssz files in spec/altair
-cd spec/altair
-rm -rf *_ssz.go
-cd ../..
-
 # Navigate to the fastssz repository path
 cd $path_to_fastssz
 
