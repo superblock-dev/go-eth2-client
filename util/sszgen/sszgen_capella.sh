@@ -8,7 +8,7 @@ cd $path_to_fastssz
 
 # Run the sszgen command
 go run sszgen/*.go -suffix ssz \
-  -include "${path_to_go_eth2_client}/spec/phase0","${path_to_go_eth2_client}/spec/altair",,"${path_to_go_eth2_client}/spec/bellatrix" \
+  -include "${path_to_go_eth2_client}/spec/phase0","${path_to_go_eth2_client}/spec/altair","${path_to_go_eth2_client}/spec/bellatrix" \
   --path "${path_to_go_eth2_client}/spec/capella" \
   --objs BeaconBlockBody,BeaconBlock,BeaconState,BLSToExecutionChange,ExecutionPayload,ExecutionPayloadHeader,HistoricalSummary,SignedBeaconBlock,SignedBLSToExecutionChange,Withdrawal
 
