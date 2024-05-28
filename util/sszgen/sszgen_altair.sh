@@ -1,7 +1,7 @@
 #!#!/bin/bash
 
 path_to_go_eth2_client=$(pwd)
-path_to_fastssz="/Users/syjn99/projects/personal-project/fastssz"
+path_to_fastssz="${1}"
 
 # Remove ssz files in spec/altair
 cd spec/altair
