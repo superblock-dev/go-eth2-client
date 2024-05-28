@@ -38,11 +38,14 @@ type BeaconState struct {
 	BlockRoots                   []phase0.Root `dynssz-size:"SLOTS_PER_HISTORICAL_ROOT,32" ssz-size:"8192,32"`
 	StateRoots                   []phase0.Root `dynssz-size:"SLOTS_PER_HISTORICAL_ROOT,32" ssz-size:"8192,32"`
 	HistoricalRoots              []phase0.Root `ssz-max:"16777216"                         ssz-size:"?,32"`
+	RewardAdjustmentFactor       uint64
 	ETH1Data                     *phase0.ETH1Data
 	ETH1DataVotes                []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex             uint64
-	Validators                   []*phase0.Validator         `ssz-max:"1099511627776"`
-	Balances                     []phase0.Gwei               `ssz-max:"1099511627776"`
+	Validators                   []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                     []phase0.Gwei       `ssz-max:"1099511627776"`
+	PreviousEpochReserve         uint64
+	CurrentEpochReserve          uint64
 	RANDAOMixes                  []phase0.Root               `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
 	Slashings                    []phase0.Gwei               `dynssz-size:"EPOCHS_PER_SLASHINGS_VECTOR"     ssz-size:"8192"`
 	PreviousEpochParticipation   []altair.ParticipationFlags `ssz-max:"1099511627776"`
@@ -54,6 +57,7 @@ type BeaconState struct {
 	InactivityScores             []uint64 `ssz-max:"1099511627776"`
 	CurrentSyncCommittee         *altair.SyncCommittee
 	NextSyncCommittee            *altair.SyncCommittee
+	BailoutScores                []uint64 `ssz-max:"1099511627776"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader
 }
 
@@ -67,11 +71,14 @@ type beaconStateJSON struct {
 	BlockRoots                   []string                  `json:"block_roots"`
 	StateRoots                   []string                  `json:"state_roots"`
 	HistoricalRoots              []string                  `json:"historical_roots"`
+	RewardAdjustmentFactor       string                    `json:"reward_adjustment_factor"`
 	ETH1Data                     *phase0.ETH1Data          `json:"eth1_data"`
 	ETH1DataVotes                []*phase0.ETH1Data        `json:"eth1_data_votes"`
 	ETH1DepositIndex             string                    `json:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator       `json:"validators"`
 	Balances                     []string                  `json:"balances"`
+	PreviousEpochReserve         string                    `json:"previous_epoch_reserve"`
+	CurrentEpochReserve          string                    `json:"current_epoch_reserve"`
 	RANDAOMixes                  []string                  `json:"randao_mixes"`
 	Slashings                    []string                  `json:"slashings"`
 	PreviousEpochParticipation   []string                  `json:"previous_epoch_participation"`
@@ -83,6 +90,7 @@ type beaconStateJSON struct {
 	InactivityScores             []string                  `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee     `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee     `json:"next_sync_committee"`
+	BailoutScores                []string                  `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader   `json:"latest_execution_payload_header"`
 }
 
@@ -96,11 +104,14 @@ type beaconStateYAML struct {
 	BlockRoots                   []string                  `json:"block_roots"`
 	StateRoots                   []string                  `json:"state_roots"`
 	HistoricalRoots              []string                  `json:"historical_roots"`
+	RewardAdjustmentFactor       uint64                    `json:"reward_adjustment_factor"`
 	ETH1Data                     *phase0.ETH1Data          `json:"eth1_data"`
 	ETH1DataVotes                []*phase0.ETH1Data        `json:"eth1_data_votes"`
 	ETH1DepositIndex             uint64                    `json:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator       `json:"validators"`
 	Balances                     []uint64                  `json:"balances"`
+	PreviousEpochReserve         uint64                    `json:"previous_epoch_reserve"`
+	CurrentEpochReserve          uint64                    `json:"current_epoch_reserve"`
 	RANDAOMixes                  []string                  `json:"randao_mixes"`
 	Slashings                    []uint64                  `json:"slashings"`
 	PreviousEpochParticipation   []uint8                   `json:"previous_epoch_participation"`
@@ -112,6 +123,7 @@ type beaconStateYAML struct {
 	InactivityScores             []uint64                  `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee     `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee     `json:"next_sync_committee"`
+	BailoutScores                []uint64                  `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader   `json:"latest_execution_payload_header"`
 }
 
@@ -153,6 +165,10 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 	for i := range s.InactivityScores {
 		inactivityScores[i] = strconv.FormatUint(s.InactivityScores[i], 10)
 	}
+	bailoutScores := make([]string, len(s.BailoutScores))
+	for i := range s.BailoutScores {
+		bailoutScores[i] = strconv.FormatUint(s.BailoutScores[i], 10)
+	}
 
 	return json.Marshal(&beaconStateJSON{
 		GenesisTime:                  strconv.FormatUint(s.GenesisTime, 10),
@@ -163,11 +179,14 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		BlockRoots:                   blockRoots,
 		StateRoots:                   stateRoots,
 		HistoricalRoots:              historicalRoots,
+		RewardAdjustmentFactor:       strconv.FormatUint(s.RewardAdjustmentFactor, 10),
 		ETH1Data:                     s.ETH1Data,
 		ETH1DataVotes:                s.ETH1DataVotes,
 		ETH1DepositIndex:             strconv.FormatUint(s.ETH1DepositIndex, 10),
 		Validators:                   s.Validators,
 		Balances:                     balances,
+		PreviousEpochReserve:         strconv.FormatUint(s.PreviousEpochReserve, 10),
+		CurrentEpochReserve:          strconv.FormatUint(s.CurrentEpochReserve, 10),
 		RANDAOMixes:                  randaoMixes,
 		Slashings:                    slashings,
 		PreviousEpochParticipation:   previousEpochParticipation,
@@ -179,6 +198,7 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		InactivityScores:             inactivityScores,
 		CurrentSyncCommittee:         s.CurrentSyncCommittee,
 		NextSyncCommittee:            s.NextSyncCommittee,
+		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: s.LatestExecutionPayloadHeader,
 	})
 }
@@ -277,6 +297,12 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 		}
 		copy(s.HistoricalRoots[i][:], historicalRoot)
 	}
+	if data.RewardAdjustmentFactor == "" {
+		return errors.New("reward adjustment factor missing")
+	}
+	if s.RewardAdjustmentFactor, err = strconv.ParseUint(data.RewardAdjustmentFactor, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for reward adjustment factor")
+	}
 	if data.ETH1Data == nil {
 		return errors.New("eth1 data missing")
 	}
@@ -315,6 +341,18 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 			return errors.Wrap(err, fmt.Sprintf("invalid value for balance %d", i))
 		}
 		s.Balances[i] = phase0.Gwei(balance)
+	}
+	if data.PreviousEpochReserve == "" {
+		return errors.New("previous epoch reserve missing")
+	}
+	if s.PreviousEpochReserve, err = strconv.ParseUint(data.PreviousEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for previous epoch reserve")
+	}
+	if data.CurrentEpochReserve == "" {
+		return errors.New("current epoch reserve missing")
+	}
+	if s.CurrentEpochReserve, err = strconv.ParseUint(data.CurrentEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for current epoch reserve")
 	}
 	s.RANDAOMixes = make([]phase0.Root, len(data.RANDAOMixes))
 	for i := range data.RANDAOMixes {
@@ -398,6 +436,15 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 		return errors.New("next sync committee missing")
 	}
 	s.NextSyncCommittee = data.NextSyncCommittee
+	s.BailoutScores = make([]uint64, len(data.BailoutScores))
+	for i := range data.BailoutScores {
+		if data.BailoutScores[i] == "" {
+			return fmt.Errorf("bailout score %d missing", i)
+		}
+		if s.BailoutScores[i], err = strconv.ParseUint(data.BailoutScores[i], 10, 64); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("invalid value for bailout score %d", i))
+		}
+	}
 	s.LatestExecutionPayloadHeader = data.LatestExecutionPayloadHeader
 
 	return nil
@@ -437,31 +484,40 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 	for i := range s.CurrentEpochParticipation {
 		currentEpochParticipation[i] = uint8(s.CurrentEpochParticipation[i])
 	}
+	bailoutScores := make([]uint64, len(s.BailoutScores))
+	for i := range s.BailoutScores {
+		bailoutScores[i] = uint64(s.BailoutScores[i])
+	}
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconStateYAML{
-		GenesisTime:                  s.GenesisTime,
-		GenesisValidatorsRoot:        fmt.Sprintf("%#x", s.GenesisValidatorsRoot),
-		Slot:                         uint64(s.Slot),
-		Fork:                         s.Fork,
-		LatestBlockHeader:            s.LatestBlockHeader,
-		BlockRoots:                   blockRoots,
-		StateRoots:                   stateRoots,
-		HistoricalRoots:              historicalRoots,
-		ETH1Data:                     s.ETH1Data,
-		ETH1DataVotes:                s.ETH1DataVotes,
-		ETH1DepositIndex:             s.ETH1DepositIndex,
-		Validators:                   s.Validators,
-		Balances:                     balances,
-		RANDAOMixes:                  randaoMixes,
-		Slashings:                    slashings,
-		PreviousEpochParticipation:   previousEpochParticipation,
-		CurrentEpochParticipation:    currentEpochParticipation,
-		JustificationBits:            fmt.Sprintf("%#x", s.JustificationBits.Bytes()),
-		PreviousJustifiedCheckpoint:  s.PreviousJustifiedCheckpoint,
-		CurrentJustifiedCheckpoint:   s.CurrentJustifiedCheckpoint,
-		FinalizedCheckpoint:          s.FinalizedCheckpoint,
-		InactivityScores:             s.InactivityScores,
-		CurrentSyncCommittee:         s.CurrentSyncCommittee,
-		NextSyncCommittee:            s.NextSyncCommittee,
+		GenesisTime:                 s.GenesisTime,
+		GenesisValidatorsRoot:       fmt.Sprintf("%#x", s.GenesisValidatorsRoot),
+		Slot:                        uint64(s.Slot),
+		Fork:                        s.Fork,
+		LatestBlockHeader:           s.LatestBlockHeader,
+		BlockRoots:                  blockRoots,
+		StateRoots:                  stateRoots,
+		HistoricalRoots:             historicalRoots,
+		RewardAdjustmentFactor:      uint64(s.RewardAdjustmentFactor),
+		ETH1Data:                    s.ETH1Data,
+		ETH1DataVotes:               s.ETH1DataVotes,
+		ETH1DepositIndex:            s.ETH1DepositIndex,
+		Validators:                  s.Validators,
+		Balances:                    balances,
+		PreviousEpochReserve:        uint64(s.PreviousEpochReserve),
+		CurrentEpochReserve:         uint64(s.CurrentEpochReserve),
+		RANDAOMixes:                 randaoMixes,
+		Slashings:                   slashings,
+		PreviousEpochParticipation:  previousEpochParticipation,
+		CurrentEpochParticipation:   currentEpochParticipation,
+		JustificationBits:           fmt.Sprintf("%#x", s.JustificationBits.Bytes()),
+		PreviousJustifiedCheckpoint: s.PreviousJustifiedCheckpoint,
+		CurrentJustifiedCheckpoint:  s.CurrentJustifiedCheckpoint,
+		FinalizedCheckpoint:         s.FinalizedCheckpoint,
+		InactivityScores:            s.InactivityScores,
+		CurrentSyncCommittee:        s.CurrentSyncCommittee,
+		NextSyncCommittee:           s.NextSyncCommittee,
+		BailoutScores:               bailoutScores,
+
 		LatestExecutionPayloadHeader: s.LatestExecutionPayloadHeader,
 	}, yaml.Flow(true))
 	if err != nil {
