@@ -13,12 +13,12 @@ path=$2
 case $version in
     altair|bellatrix|capella)
         # Remove ssz files in spec/$version
-        cd "spec/{$version}"
+        cd spec/$version
         rm -rf *_ssz.go
         cd ../..
 
         # Run the corresponding version script with the provided path
-        sh ./sszgen_${version}.sh "$path"
+        sh ./util/sszgen/sszgen_${version}.sh "$path"
         ;;
     *)
         echo "Error: Invalid version specified. Choose from 'altair', 'bellatrix', or 'capella'."
