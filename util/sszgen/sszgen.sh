@@ -11,7 +11,7 @@ path=$2
 
 # Check if the version is one of the allowed options
 case $version in
-    altair|bellatrix|capella)
+    phase0|altair|bellatrix|capella)
         # Remove ssz files in spec/$version
         cd spec/$version
         rm -rf *_ssz.go

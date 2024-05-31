@@ -36,11 +36,14 @@ type BeaconState struct {
 	BlockRoots                  []Root `dynssz-size:"SLOTS_PER_HISTORICAL_ROOT,32" ssz-size:"8192,32"`
 	StateRoots                  []Root `dynssz-size:"SLOTS_PER_HISTORICAL_ROOT,32" ssz-size:"8192,32"`
 	HistoricalRoots             []Root `ssz-max:"16777216"                         ssz-size:"?,32"`
+	RewardAdjustmentFactor      uint64
 	ETH1Data                    *ETH1Data
 	ETH1DataVotes               []*ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex            uint64
 	Validators                  []*Validator          `ssz-max:"1099511627776"`
 	Balances                    []Gwei                `ssz-max:"1099511627776"`
+	PreviousEpochReserve        uint64
+	CurrentEpochReserve         uint64
 	RANDAOMixes                 []Root                `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
 	Slashings                   []Gwei                `dynssz-size:"EPOCHS_PER_SLASHINGS_VECTOR"     ssz-size:"8192"`
 	PreviousEpochAttestations   []*PendingAttestation `ssz-max:"4096"`
@@ -61,11 +64,14 @@ type beaconStateJSON struct {
 	BlockRoots                  []string              `json:"block_roots"`
 	StateRoots                  []string              `json:"state_roots"`
 	HistoricalRoots             []string              `json:"historical_roots"`
+	RewardAdjustmentFactor      string                `json:"reward_adjustment_factor"`
 	ETH1Data                    *ETH1Data             `json:"eth1_data"`
 	ETH1DataVotes               []*ETH1Data           `json:"eth1_data_votes"`
 	ETH1DepositIndex            string                `json:"eth1_deposit_index"`
 	Validators                  []*Validator          `json:"validators"`
 	Balances                    []string              `json:"balances"`
+	PreviousEpochReserve        string                `json:"previous_epoch_reserve"`
+	CurrentEpochReserve         string                `json:"current_epoch_reserve"`
 	RANDAOMixes                 []string              `json:"randao_mixes"`
 	Slashings                   []string              `json:"slashings"`
 	PreviousEpochAttestations   []*PendingAttestation `json:"previous_epoch_attestations"`
@@ -86,11 +92,14 @@ type beaconStateYAML struct {
 	BlockRoots                  []Root                `json:"block_roots"`
 	StateRoots                  []Root                `json:"state_roots"`
 	HistoricalRoots             []Root                `json:"historical_roots"`
+	RewardAdjustmentFactor      uint64                `json:"reward_adjustment_factor"`
 	ETH1Data                    *ETH1Data             `json:"eth1_data"`
 	ETH1DataVotes               []*ETH1Data           `json:"eth1_data_votes"`
 	ETH1DepositIndex            uint64                `json:"eth1_deposit_index"`
 	Validators                  []*Validator          `json:"validators"`
 	Balances                    []Gwei                `json:"balances"`
+	PreviousEpochReserve        uint64                `json:"previous_epoch_reserve"`
+	CurrentEpochReserve         uint64                `json:"current_epoch_reserve"`
 	RANDAOMixes                 []Root                `json:"randao_mixes"`
 	Slashings                   []Gwei                `json:"slashings"`
 	PreviousEpochAttestations   []*PendingAttestation `json:"previous_epoch_attestations"`
@@ -137,11 +146,14 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		BlockRoots:                  blockRoots,
 		StateRoots:                  stateRoots,
 		HistoricalRoots:             historicalRoots,
+		RewardAdjustmentFactor:      strconv.FormatUint(s.RewardAdjustmentFactor, 10),
 		ETH1Data:                    s.ETH1Data,
 		ETH1DataVotes:               s.ETH1DataVotes,
 		ETH1DepositIndex:            strconv.FormatUint(s.ETH1DepositIndex, 10),
 		Validators:                  s.Validators,
 		Balances:                    balances,
+		PreviousEpochReserve:        strconv.FormatUint(s.PreviousEpochReserve, 10),
+		CurrentEpochReserve:         strconv.FormatUint(s.CurrentEpochReserve, 10),
 		RANDAOMixes:                 randaoMixes,
 		Slashings:                   slashings,
 		PreviousEpochAttestations:   s.PreviousEpochAttestations,
@@ -247,6 +259,12 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 		}
 		copy(s.HistoricalRoots[i][:], historicalRoot)
 	}
+	if data.RewardAdjustmentFactor == "" {
+		return errors.New("reward adjustment factor missing")
+	}
+	if s.RewardAdjustmentFactor, err = strconv.ParseUint(data.RewardAdjustmentFactor, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for reward adjustment factor")
+	}
 	if data.ETH1Data == nil {
 		return errors.New("eth1 data missing")
 	}
@@ -285,6 +303,18 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 			return errors.Wrap(err, fmt.Sprintf("invalid value for balance %d", i))
 		}
 		s.Balances[i] = Gwei(balance)
+	}
+	if data.PreviousEpochReserve == "" {
+		return errors.New("previous epoch reserve missing")
+	}
+	if s.PreviousEpochReserve, err = strconv.ParseUint(data.PreviousEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for previous epoch reserve")
+	}
+	if data.CurrentEpochReserve == "" {
+		return errors.New("current epoch reserve missing")
+	}
+	if s.CurrentEpochReserve, err = strconv.ParseUint(data.CurrentEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "invalid value for current epoch reserve")
 	}
 	s.RANDAOMixes = make([]Root, len(data.RANDAOMixes))
 	for i := range data.RANDAOMixes {
@@ -356,11 +386,14 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 		BlockRoots:                  s.BlockRoots,
 		StateRoots:                  s.StateRoots,
 		HistoricalRoots:             s.HistoricalRoots,
+		RewardAdjustmentFactor:      s.RewardAdjustmentFactor,
 		ETH1Data:                    s.ETH1Data,
 		ETH1DataVotes:               s.ETH1DataVotes,
 		ETH1DepositIndex:            s.ETH1DepositIndex,
 		Validators:                  s.Validators,
 		Balances:                    s.Balances,
+		PreviousEpochReserve:        s.PreviousEpochReserve,
+		CurrentEpochReserve:         s.CurrentEpochReserve,
 		RANDAOMixes:                 s.RANDAOMixes,
 		Slashings:                   s.Slashings,
 		PreviousEpochAttestations:   s.PreviousEpochAttestations,
