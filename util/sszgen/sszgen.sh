@@ -9,6 +9,8 @@ fi
 version=$1
 path=$2
 
+export PATH="$PATH:$HOME/go/bin"
+
 # Check if the version is one of the allowed options
 case $version in
     phase0|altair|bellatrix|capella)
