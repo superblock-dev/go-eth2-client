@@ -32,7 +32,6 @@ type ExecutionPayload struct {
 	ParentHash     phase0.Hash32    `ssz-size:"32"`
 	FeeRecipient   ExecutionAddress `ssz-size:"20"`
 	StateRoot      [32]byte         `ssz-size:"32"`
-	CheckpointRoot [32]byte         `ssz-size:"32"`
 	ReceiptsRoot   [32]byte         `ssz-size:"32"`
 	LogsBloom      [256]byte        `ssz-size:"256"`
 	PrevRandao     [32]byte         `ssz-size:"32"`
@@ -51,7 +50,6 @@ type executionPayloadJSON struct {
 	ParentHash     string   `json:"parent_hash"`
 	FeeRecipient   string   `json:"fee_recipient"`
 	StateRoot      string   `json:"state_root"`
-	CheckpointRoot string   `json:"checkpoint_root"`
 	ReceiptsRoot   string   `json:"receipts_root"`
 	LogsBloom      string   `json:"logs_bloom"`
 	PrevRandao     string   `json:"prev_randao"`
@@ -70,7 +68,6 @@ type executionPayloadYAML struct {
 	ParentHash     string   `yaml:"parent_hash"`
 	FeeRecipient   string   `yaml:"fee_recipient"`
 	StateRoot      string   `yaml:"state_root"`
-	CheckpointRoot string   `yaml:"checkpoint_root"`
 	ReceiptsRoot   string   `yaml:"receipts_root"`
 	LogsBloom      string   `yaml:"logs_bloom"`
 	PrevRandao     string   `yaml:"prev_randao"`
@@ -108,7 +105,6 @@ func (e *ExecutionPayload) MarshalJSON() ([]byte, error) {
 		ParentHash:     fmt.Sprintf("%#x", e.ParentHash),
 		FeeRecipient:   e.FeeRecipient.String(),
 		StateRoot:      fmt.Sprintf("%#x", e.StateRoot),
-		CheckpointRoot: fmt.Sprintf("%#x", e.CheckpointRoot),
 		ReceiptsRoot:   fmt.Sprintf("%#x", e.ReceiptsRoot),
 		LogsBloom:      fmt.Sprintf("%#x", e.LogsBloom),
 		PrevRandao:     fmt.Sprintf("%#x", e.PrevRandao),
@@ -170,15 +166,6 @@ func (e *ExecutionPayload) unpack(data *executionPayloadJSON) error {
 		return errors.New("incorrect length for state root")
 	}
 	copy(e.StateRoot[:], stateRoot)
-
-	if data.CheckpointRoot == "" {
-		return errors.New("checkpoint root missing")
-	}
-	checkpointRoot, err := hex.DecodeString(strings.TrimPrefix(data.CheckpointRoot, "0x"))
-	if err != nil {
-		return errors.Wrap(err, "invalid value for checkpoint root")
-	}
-	copy(e.CheckpointRoot[:], checkpointRoot)
 
 	if data.ReceiptsRoot == "" {
 		return errors.New("receipts root missing")
@@ -366,7 +353,6 @@ func (e *ExecutionPayload) MarshalYAML() ([]byte, error) {
 		ParentHash:     fmt.Sprintf("%#x", e.ParentHash),
 		FeeRecipient:   e.FeeRecipient.String(),
 		StateRoot:      fmt.Sprintf("%#x", e.StateRoot),
-		CheckpointRoot: fmt.Sprintf("%#x", e.CheckpointRoot),
 		ReceiptsRoot:   fmt.Sprintf("%#x", e.ReceiptsRoot),
 		LogsBloom:      fmt.Sprintf("%#x", e.LogsBloom),
 		PrevRandao:     fmt.Sprintf("%#x", e.PrevRandao),

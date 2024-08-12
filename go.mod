@@ -3,7 +3,7 @@ module github.com/attestantio/go-eth2-client
 go 1.20
 
 require (
-	github.com/ferranbt/fastssz v0.1.3
+	github.com/ferranbt/fastssz v0.1.4
 	github.com/goccy/go-yaml v1.9.2
 	github.com/golang/snappy v0.0.4
 	github.com/holiman/uint256 v1.2.4
@@ -26,6 +26,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/emicklei/dot v1.6.2 // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/go-logr/logr v1.2.4 // indirect
 	github.com/go-logr/stdr v1.2.2 // indirect
