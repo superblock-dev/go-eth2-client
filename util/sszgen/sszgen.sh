@@ -13,7 +13,7 @@ export PATH="$PATH:$HOME/go/bin"
 
 # Check if the version is one of the allowed options
 case $version in
-    phase0|altair|bellatrix|capella)
+    phase0|altair|bellatrix|capella|deneb|electra)
         # Remove ssz files in spec/$version
         cd spec/$version
         rm -rf *_ssz.go
@@ -23,7 +23,7 @@ case $version in
         sh ./util/sszgen/sszgen_${version}.sh "$path"
         ;;
     *)
-        echo "Error: Invalid version specified. Choose from 'altair', 'bellatrix', or 'capella'."
+        echo "Error: Invalid version specified. Choose from 'altair', 'bellatrix', 'capella', 'deneb', or 'electra'."
         exit 1
         ;;
 esac

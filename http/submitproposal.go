@@ -71,13 +71,7 @@ func (s *Service) submitProposalData(ctx context.Context,
 	var contentType ContentType
 	var err error
 
-	nodeClientResponse, err := s.NodeClient(ctx)
-	nodeClient := "unknown"
-	if err == nil {
-		nodeClient = nodeClientResponse.Data
-	}
-
-	if s.enforceJSON || nodeClient == "lodestar" {
+	if s.enforceJSON {
 		contentType = ContentTypeJSON
 		body, err = s.submitProposalJSON(ctx, proposal)
 	} else {
@@ -116,6 +110,8 @@ func (*Service) submitProposalJSON(_ context.Context,
 		specJSON, err = json.Marshal(proposal.Capella)
 	case spec.DataVersionDeneb:
 		specJSON, err = json.Marshal(proposal.Deneb)
+	case spec.DataVersionElectra:
+		specJSON, err = json.Marshal(proposal.Electra)
 	default:
 		err = errors.New("unknown proposal version")
 	}
@@ -150,6 +146,8 @@ func (*Service) submitProposalSSZ(_ context.Context,
 		specSSZ, err = proposal.Capella.MarshalSSZ()
 	case spec.DataVersionDeneb:
 		specSSZ, err = proposal.Deneb.MarshalSSZ()
+	case spec.DataVersionElectra:
+		specSSZ, err = proposal.Electra.MarshalSSZ()
 	default:
 		err = errors.New("unknown proposal version")
 	}

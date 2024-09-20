@@ -37,6 +37,7 @@ type beaconBlockBodyJSON struct {
 	Deposits              []*phase0.Deposit                     `json:"deposits"`
 	VoluntaryExits        []*phase0.SignedVoluntaryExit         `json:"voluntary_exits"`
 	SyncAggregate         *altair.SyncAggregate                 `json:"sync_aggregate"`
+	BailOuts              []*altair.BailOut                     `json:"bail_outs"`
 	ExecutionPayload      *ExecutionPayload                     `json:"execution_payload"`
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
 	BlobKZGCommitments    []string                              `json:"blob_kzg_commitments"`
@@ -59,6 +60,7 @@ func (b *BeaconBlockBody) MarshalJSON() ([]byte, error) {
 		Deposits:              b.Deposits,
 		VoluntaryExits:        b.VoluntaryExits,
 		SyncAggregate:         b.SyncAggregate,
+		BailOuts:              b.BailOuts,
 		ExecutionPayload:      b.ExecutionPayload,
 		BLSToExecutionChanges: b.BLSToExecutionChanges,
 		BlobKZGCommitments:    blobKZGCommitments,
@@ -145,6 +147,15 @@ func (b *BeaconBlockBody) UnmarshalJSON(input []byte) error {
 
 	if err := json.Unmarshal(raw["sync_aggregate"], &b.SyncAggregate); err != nil {
 		return errors.Wrap(err, "sync_aggregate")
+	}
+
+	if err := json.Unmarshal(raw["bail_outs"], &b.BailOuts); err != nil {
+		return errors.Wrap(err, "bail_outs")
+	}
+	for i := range b.BailOuts {
+		if b.BailOuts[i] == nil {
+			return fmt.Errorf("bail outs entry %d missing", i)
+		}
 	}
 
 	if err := json.Unmarshal(raw["execution_payload"], &b.ExecutionPayload); err != nil {
