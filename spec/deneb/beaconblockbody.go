@@ -33,6 +33,7 @@ type BeaconBlockBody struct {
 	Deposits              []*phase0.Deposit             `ssz-max:"16"`
 	VoluntaryExits        []*phase0.SignedVoluntaryExit `ssz-max:"16"`
 	SyncAggregate         *altair.SyncAggregate
+	BailOuts              []*altair.BailOut							`ssz-max:"16"`
 	ExecutionPayload      *ExecutionPayload
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
 	BlobKZGCommitments    []KZGCommitment                       `ssz-max:"4096" ssz-size:"?,48"`

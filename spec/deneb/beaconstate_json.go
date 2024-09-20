@@ -37,12 +37,15 @@ type beaconStateJSON struct {
 	BlockRoots            []phase0.Root             `json:"block_roots"`
 	StateRoots            []phase0.Root             `json:"state_roots"`
 	HistoricalRoots       []phase0.Root             `json:"historical_roots"`
+	RewardAdjustmentFactor  string                    `json:"reward_adjustment_factor"`
 	ETH1Data              *phase0.ETH1Data          `json:"eth1_data"`
 	//nolint:staticcheck
 	ETH1DataVotes                []*phase0.ETH1Data           `json:"eth1_data_votes,allowempty"`
 	ETH1DepositIndex             string                       `json:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator          `json:"validators"`
 	Balances                     []string                     `json:"balances"`
+	PreviousEpochReserve         string                       `json:"previous_epoch_reserve"`
+	CurrentEpochReserve          string                       `json:"current_epoch_reserve"`
 	RANDAOMixes                  []string                     `json:"randao_mixes"`
 	Slashings                    []string                     `json:"slashings"`
 	PreviousEpochParticipation   []string                     `json:"previous_epoch_participation"`
@@ -54,6 +57,7 @@ type beaconStateJSON struct {
 	InactivityScores             []string                     `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee        `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee        `json:"next_sync_committee"`
+	BailoutScores                []string                     `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader      `json:"latest_execution_payload_header"`
 	NextWithdrawalIndex          string                       `json:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex string                       `json:"next_withdrawal_validator_index"`
@@ -86,6 +90,10 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 	for i := range b.InactivityScores {
 		inactivityScores[i] = strconv.FormatUint(b.InactivityScores[i], 10)
 	}
+	bailoutScores := make([]string, len(b.BailoutScores))
+	for i := range b.BailoutScores {
+		bailoutScores[i] = strconv.FormatUint(b.BailoutScores[i], 10)
+	}
 
 	return json.Marshal(&beaconStateJSON{
 		GenesisTime:                  strconv.FormatUint(b.GenesisTime, 10),
@@ -96,11 +104,14 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		BlockRoots:                   b.BlockRoots,
 		StateRoots:                   b.StateRoots,
 		HistoricalRoots:              b.HistoricalRoots,
+		RewardAdjustmentFactor:       strconv.FormatUint(b.RewardAdjustmentFactor, 10),
 		ETH1Data:                     b.ETH1Data,
 		ETH1DataVotes:                b.ETH1DataVotes,
 		ETH1DepositIndex:             strconv.FormatUint(b.ETH1DepositIndex, 10),
 		Validators:                   b.Validators,
 		Balances:                     balances,
+		PreviousEpochReserve:         strconv.FormatUint(b.PreviousEpochReserve, 10),
+		CurrentEpochReserve:          strconv.FormatUint(b.CurrentEpochReserve, 10),
 		RANDAOMixes:                  randaoMixes,
 		Slashings:                    slashings,
 		PreviousEpochParticipation:   previousEpochParticipation,
@@ -112,6 +123,7 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		InactivityScores:             inactivityScores,
 		CurrentSyncCommittee:         b.CurrentSyncCommittee,
 		NextSyncCommittee:            b.NextSyncCommittee,
+		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: b.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          fmt.Sprintf("%d", b.NextWithdrawalIndex),
 		NextWithdrawalValidatorIndex: fmt.Sprintf("%d", b.NextWithdrawalValidatorIndex),
@@ -163,6 +175,11 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "historical_roots")
 	}
 
+	rewardAdjustmentFactor := string(bytes.Trim(raw["reward_adjustment_factor"], `"`))
+	if b.RewardAdjustmentFactor, err = strconv.ParseUint(rewardAdjustmentFactor, 10, 64); err != nil {
+		return errors.Wrap(err, "reward_adjustment_factor")
+	}
+
 	b.ETH1Data = &phase0.ETH1Data{}
 	if err := b.ETH1Data.UnmarshalJSON(raw["eth1_data"]); err != nil {
 		return errors.Wrap(err, "eth1_data")
@@ -193,6 +210,16 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 
 	if err := json.Unmarshal(raw["balances"], &b.Balances); err != nil {
 		return errors.Wrap(err, "balances")
+	}
+
+	previousEpochReserve := string(bytes.Trim(raw["previous_epoch_reserve"], `"`))
+	if b.PreviousEpochReserve, err = strconv.ParseUint(previousEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "previous_epoch_reserve")
+	}
+
+	currentEpochReserve := string(bytes.Trim(raw["current_epoch_reserve"], `"`))
+	if b.CurrentEpochReserve, err = strconv.ParseUint(currentEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "current_epoch_reserve")
 	}
 
 	if err := json.Unmarshal(raw["randao_mixes"], &b.RANDAOMixes); err != nil {
@@ -253,6 +280,20 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 	b.NextSyncCommittee = &altair.SyncCommittee{}
 	if err := b.NextSyncCommittee.UnmarshalJSON(raw["next_sync_committee"]); err != nil {
 		return errors.Wrap(err, "next_sync_committee")
+	}
+
+	bailoutScores := make([]string, 0)
+	if err := json.Unmarshal(raw["bailout_scores"], &bailoutScores); err != nil {
+		return errors.Wrap(err, "bailout_scores")
+	}
+	b.BailoutScores = make([]uint64, len(bailoutScores))
+	for i := range bailoutScores {
+		if bailoutScores[i] == "" {
+			return fmt.Errorf("bailout score %d missing", i)
+		}
+		if b.BailoutScores[i], err = strconv.ParseUint(bailoutScores[i], 10, 64); err != nil {
+			return errors.Wrap(err, fmt.Sprintf("invalid value for bailout score %d", i))
+		}
 	}
 
 	b.LatestExecutionPayloadHeader = &ExecutionPayloadHeader{}
