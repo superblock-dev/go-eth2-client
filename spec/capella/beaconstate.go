@@ -42,8 +42,8 @@ type BeaconState struct {
 	ETH1Data                     *phase0.ETH1Data
 	ETH1DataVotes                []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex             uint64
-	Validators                   []*phase0.Validator         `ssz-max:"1099511627776"`
-	Balances                     []phase0.Gwei               `ssz-max:"1099511627776"`
+	Validators                   []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                     []phase0.Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve         uint64
 	CurrentEpochReserve          uint64
 	RANDAOMixes                  []phase0.Root               `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
@@ -214,7 +214,6 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		HistoricalSummaries:          s.HistoricalSummaries,
 	})
 }
-
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (s *BeaconState) UnmarshalJSON(input []byte) error {
@@ -577,9 +576,6 @@ func (s *BeaconState) UnmarshalYAML(input []byte) error {
 
 	return s.unpack(&data)
 }
-
-
-
 
 // String returns a string version of the structure.
 func (s *BeaconState) String() string {

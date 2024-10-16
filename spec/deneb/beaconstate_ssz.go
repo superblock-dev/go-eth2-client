@@ -850,7 +850,7 @@ func (b *BeaconState) HashTreeRootWith(hh ssz.HashWalker) (err error) {
 			err = ssz.ErrListTooBigFn("BeaconState.CurrentEpochParticipation", size, 1099511627776)
 			return
 		}
-		subIndx := hh.Index()	
+		subIndx := hh.Index()
 		for _, i := range b.CurrentEpochParticipation {
 			hh.AppendUint8(uint8(i))
 		}

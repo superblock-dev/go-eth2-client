@@ -36,7 +36,7 @@ type BeaconBlockBody struct {
 	Deposits          []*phase0.Deposit             `ssz-max:"16"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `ssz-max:"16"`
 	SyncAggregate     *SyncAggregate
-	BailOuts          []*BailOut										`ssz-max:"16"`
+	BailOuts          []*BailOut `ssz-max:"16"`
 }
 
 // beaconBlockBodyJSON is the spec representation of the struct.
@@ -50,7 +50,7 @@ type beaconBlockBodyJSON struct {
 	Deposits          []*phase0.Deposit             `json:"deposits"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
 	SyncAggregate     *SyncAggregate                `json:"sync_aggregate"`
-	BailOuts          []*BailOut										`json:"bail_outs"`
+	BailOuts          []*BailOut                    `json:"bail_outs"`
 }
 
 // beaconBlockBodyYAML is the spec representation of the struct.
@@ -64,7 +64,7 @@ type beaconBlockBodyYAML struct {
 	Deposits          []*phase0.Deposit             `yaml:"deposits"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
 	SyncAggregate     *SyncAggregate                `yaml:"sync_aggregate"`
-	BailOuts          []*BailOut										`yaml:"bail_outs"`
+	BailOuts          []*BailOut                    `yaml:"bail_outs"`
 }
 
 // MarshalJSON implements json.Marshaler.

@@ -18,6 +18,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
 	bitfield "github.com/prysmaticlabs/go-bitfield"
@@ -37,8 +38,8 @@ type BeaconState struct {
 	ETH1Data                      *phase0.ETH1Data
 	ETH1DataVotes                 []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex              uint64
-	Validators                    []*phase0.Validator         `ssz-max:"1099511627776"`
-	Balances                      []phase0.Gwei               `ssz-max:"1099511627776"`
+	Validators                    []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                      []phase0.Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve          uint64
 	CurrentEpochReserve           uint64
 	RANDAOMixes                   []phase0.Root               `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
@@ -53,7 +54,7 @@ type BeaconState struct {
 	CurrentSyncCommittee          *altair.SyncCommittee
 	NextSyncCommittee             *altair.SyncCommittee
 	BailoutScores                 []uint64 `ssz-max:"1099511627776"`
-	LatestExecutionPayloadHeader  *ExecutionPayloadHeader
+	LatestExecutionPayloadHeader  *deneb.ExecutionPayloadHeader
 	NextWithdrawalIndex           capella.WithdrawalIndex
 	NextWithdrawalValidatorIndex  phase0.ValidatorIndex
 	HistoricalSummaries           []*capella.HistoricalSummary `ssz-max:"16777216"`
@@ -63,7 +64,7 @@ type BeaconState struct {
 	EarliestExitEpoch             phase0.Epoch
 	ConsolidationBalanceToConsume phase0.Gwei
 	EarliestConsolidationEpoch    phase0.Epoch
-	PendingBalanceDeposits        []*PendingBalanceDeposit    `ssz-max:"134217728"`
+	PendingDeposits               []*PendingDeposit           `ssz-max:"134217728"`
 	PendingPartialWithdrawals     []*PendingPartialWithdrawal `ssz-max:"134217728"`
 	PendingConsolidations         []*PendingConsolidation     `ssz-max:"262144"`
 }

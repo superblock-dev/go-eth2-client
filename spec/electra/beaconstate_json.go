@@ -23,54 +23,55 @@ import (
 	"github.com/attestantio/go-eth2-client/codecs"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
 
 // beaconStateJSON is the spec representation of the struct.
 type beaconStateJSON struct {
-	GenesisTime           string                    `json:"genesis_time"`
-	GenesisValidatorsRoot phase0.Root               `json:"genesis_validators_root"`
-	Slot                  phase0.Slot               `json:"slot"`
-	Fork                  *phase0.Fork              `json:"fork"`
-	LatestBlockHeader     *phase0.BeaconBlockHeader `json:"latest_block_header"`
-	BlockRoots            []phase0.Root             `json:"block_roots"`
-	StateRoots            []phase0.Root             `json:"state_roots"`
-	HistoricalRoots       []phase0.Root             `json:"historical_roots"`
+	GenesisTime            string                    `json:"genesis_time"`
+	GenesisValidatorsRoot  phase0.Root               `json:"genesis_validators_root"`
+	Slot                   phase0.Slot               `json:"slot"`
+	Fork                   *phase0.Fork              `json:"fork"`
+	LatestBlockHeader      *phase0.BeaconBlockHeader `json:"latest_block_header"`
+	BlockRoots             []phase0.Root             `json:"block_roots"`
+	StateRoots             []phase0.Root             `json:"state_roots"`
+	HistoricalRoots        []phase0.Root             `json:"historical_roots"`
 	RewardAdjustmentFactor string                    `json:"reward_adjustment_factor"`
-	ETH1Data              *phase0.ETH1Data          `json:"eth1_data"`
+	ETH1Data               *phase0.ETH1Data          `json:"eth1_data"`
 	//nolint:staticcheck
-	ETH1DataVotes                 []*phase0.ETH1Data           `json:"eth1_data_votes,allowempty"`
-	ETH1DepositIndex              string                       `json:"eth1_deposit_index"`
-	Validators                    []*phase0.Validator          `json:"validators"`
-	Balances                      []string                     `json:"balances"`
-	PreviousEpochReserve          string                       `json:"previous_epoch_reserve"`
-	CurrentEpochReserve           string                       `json:"current_epoch_reserve"`
-	RANDAOMixes                   []string                     `json:"randao_mixes"`
-	Slashings                     []string                     `json:"slashings"`
-	PreviousEpochParticipation    []string                     `json:"previous_epoch_participation"`
-	CurrentEpochParticipation     []string                     `json:"current_epoch_participation"`
-	JustificationBits             string                       `json:"justification_bits"`
-	PreviousJustifiedCheckpoint   *phase0.Checkpoint           `json:"previous_justified_checkpoint"`
-	CurrentJustifiedCheckpoint    *phase0.Checkpoint           `json:"current_justified_checkpoint"`
-	FinalizedCheckpoint           *phase0.Checkpoint           `json:"finalized_checkpoint"`
-	InactivityScores              []string                     `json:"inactivity_scores"`
-	CurrentSyncCommittee          *altair.SyncCommittee        `json:"current_sync_committee"`
-	NextSyncCommittee             *altair.SyncCommittee        `json:"next_sync_committee"`
-	BailoutScores                 []string                     `json:"bailout_scores"`
-	LatestExecutionPayloadHeader  *ExecutionPayloadHeader      `json:"latest_execution_payload_header"`
-	NextWithdrawalIndex           string                       `json:"next_withdrawal_index"`
-	NextWithdrawalValidatorIndex  string                       `json:"next_withdrawal_validator_index"`
-	HistoricalSummaries           []*capella.HistoricalSummary `json:"historical_summaries"`
-	DepositRequestsStartIndex     string                       `json:"deposit_requests_start_index"`
-	DepositBalanceToConsume       phase0.Gwei                  `json:"deposit_balance_to_consume"`
-	ExitBalanceToConsume          phase0.Gwei                  `json:"exit_balance_to_consume"`
-	EarliestExitEpoch             phase0.Epoch                 `json:"earliest_exit_epoch"`
-	ConsolidationBalanceToConsume phase0.Gwei                  `json:"consolidation_balance_to_consume"`
-	EarliestConsolidationEpoch    phase0.Epoch                 `json:"earliest_consolidation_epoch"`
-	PendingBalanceDeposits        []*PendingBalanceDeposit     `json:"pending_balance_deposits"`
-	PendingPartialWithdrawals     []*PendingPartialWithdrawal  `json:"pending_partial_withdrawals"`
-	PendingConsolidations         []*PendingConsolidation      `json:"pending_consolidations"`
+	ETH1DataVotes                 []*phase0.ETH1Data            `json:"eth1_data_votes,allowempty"`
+	ETH1DepositIndex              string                        `json:"eth1_deposit_index"`
+	Validators                    []*phase0.Validator           `json:"validators"`
+	Balances                      []string                      `json:"balances"`
+	PreviousEpochReserve          string                        `json:"previous_epoch_reserve"`
+	CurrentEpochReserve           string                        `json:"current_epoch_reserve"`
+	RANDAOMixes                   []string                      `json:"randao_mixes"`
+	Slashings                     []string                      `json:"slashings"`
+	PreviousEpochParticipation    []string                      `json:"previous_epoch_participation"`
+	CurrentEpochParticipation     []string                      `json:"current_epoch_participation"`
+	JustificationBits             string                        `json:"justification_bits"`
+	PreviousJustifiedCheckpoint   *phase0.Checkpoint            `json:"previous_justified_checkpoint"`
+	CurrentJustifiedCheckpoint    *phase0.Checkpoint            `json:"current_justified_checkpoint"`
+	FinalizedCheckpoint           *phase0.Checkpoint            `json:"finalized_checkpoint"`
+	InactivityScores              []string                      `json:"inactivity_scores"`
+	CurrentSyncCommittee          *altair.SyncCommittee         `json:"current_sync_committee"`
+	NextSyncCommittee             *altair.SyncCommittee         `json:"next_sync_committee"`
+	BailoutScores                 []string                      `json:"bailout_scores"`
+	LatestExecutionPayloadHeader  *deneb.ExecutionPayloadHeader `json:"latest_execution_payload_header"`
+	NextWithdrawalIndex           string                        `json:"next_withdrawal_index"`
+	NextWithdrawalValidatorIndex  string                        `json:"next_withdrawal_validator_index"`
+	HistoricalSummaries           []*capella.HistoricalSummary  `json:"historical_summaries"`
+	DepositRequestsStartIndex     string                        `json:"deposit_requests_start_index"`
+	DepositBalanceToConsume       phase0.Gwei                   `json:"deposit_balance_to_consume"`
+	ExitBalanceToConsume          phase0.Gwei                   `json:"exit_balance_to_consume"`
+	EarliestExitEpoch             phase0.Epoch                  `json:"earliest_exit_epoch"`
+	ConsolidationBalanceToConsume phase0.Gwei                   `json:"consolidation_balance_to_consume"`
+	EarliestConsolidationEpoch    phase0.Epoch                  `json:"earliest_consolidation_epoch"`
+	PendingDeposits               []*PendingDeposit             `json:"pending_deposits"`
+	PendingPartialWithdrawals     []*PendingPartialWithdrawal   `json:"pending_partial_withdrawals"`
+	PendingConsolidations         []*PendingConsolidation       `json:"pending_consolidations"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -143,7 +144,7 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		EarliestExitEpoch:             b.EarliestExitEpoch,
 		ConsolidationBalanceToConsume: b.ConsolidationBalanceToConsume,
 		EarliestConsolidationEpoch:    b.EarliestConsolidationEpoch,
-		PendingBalanceDeposits:        b.PendingBalanceDeposits,
+		PendingDeposits:               b.PendingDeposits,
 		PendingPartialWithdrawals:     b.PendingPartialWithdrawals,
 		PendingConsolidations:         b.PendingConsolidations,
 	})
@@ -314,7 +315,7 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		}
 	}
 
-	b.LatestExecutionPayloadHeader = &ExecutionPayloadHeader{}
+	b.LatestExecutionPayloadHeader = &deneb.ExecutionPayloadHeader{}
 	if err := b.LatestExecutionPayloadHeader.UnmarshalJSON(raw["latest_execution_payload_header"]); err != nil {
 		return errors.Wrap(err, "latest_execution_payload_header")
 	}
@@ -361,12 +362,12 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "earliest_consolidation_epoch")
 	}
 
-	if err := json.Unmarshal(raw["pending_balance_deposits"], &b.PendingBalanceDeposits); err != nil {
-		return errors.Wrap(err, "pending_balance_deposits")
+	if err := json.Unmarshal(raw["pending_deposits"], &b.PendingDeposits); err != nil {
+		return errors.Wrap(err, "pending_deposits")
 	}
-	for i := range b.PendingBalanceDeposits {
-		if b.PendingBalanceDeposits[i] == nil {
-			return fmt.Errorf("pending balance deposits entry %d missing", i)
+	for i := range b.PendingDeposits {
+		if b.PendingDeposits[i] == nil {
+			return fmt.Errorf("pending deposits entry %d missing", i)
 		}
 	}
 

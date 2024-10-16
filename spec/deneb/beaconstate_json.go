@@ -29,16 +29,16 @@ import (
 
 // beaconStateJSON is the spec representation of the struct.
 type beaconStateJSON struct {
-	GenesisTime           string                    `json:"genesis_time"`
-	GenesisValidatorsRoot phase0.Root               `json:"genesis_validators_root"`
-	Slot                  phase0.Slot               `json:"slot"`
-	Fork                  *phase0.Fork              `json:"fork"`
-	LatestBlockHeader     *phase0.BeaconBlockHeader `json:"latest_block_header"`
-	BlockRoots            []phase0.Root             `json:"block_roots"`
-	StateRoots            []phase0.Root             `json:"state_roots"`
-	HistoricalRoots       []phase0.Root             `json:"historical_roots"`
-	RewardAdjustmentFactor  string                    `json:"reward_adjustment_factor"`
-	ETH1Data              *phase0.ETH1Data          `json:"eth1_data"`
+	GenesisTime            string                    `json:"genesis_time"`
+	GenesisValidatorsRoot  phase0.Root               `json:"genesis_validators_root"`
+	Slot                   phase0.Slot               `json:"slot"`
+	Fork                   *phase0.Fork              `json:"fork"`
+	LatestBlockHeader      *phase0.BeaconBlockHeader `json:"latest_block_header"`
+	BlockRoots             []phase0.Root             `json:"block_roots"`
+	StateRoots             []phase0.Root             `json:"state_roots"`
+	HistoricalRoots        []phase0.Root             `json:"historical_roots"`
+	RewardAdjustmentFactor string                    `json:"reward_adjustment_factor"`
+	ETH1Data               *phase0.ETH1Data          `json:"eth1_data"`
 	//nolint:staticcheck
 	ETH1DataVotes                []*phase0.ETH1Data           `json:"eth1_data_votes,allowempty"`
 	ETH1DepositIndex             string                       `json:"eth1_deposit_index"`

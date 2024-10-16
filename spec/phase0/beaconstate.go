@@ -40,8 +40,8 @@ type BeaconState struct {
 	ETH1Data                    *ETH1Data
 	ETH1DataVotes               []*ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex            uint64
-	Validators                  []*Validator          `ssz-max:"1099511627776"`
-	Balances                    []Gwei                `ssz-max:"1099511627776"`
+	Validators                  []*Validator `ssz-max:"1099511627776"`
+	Balances                    []Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve        uint64
 	CurrentEpochReserve         uint64
 	RANDAOMixes                 []Root                `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`

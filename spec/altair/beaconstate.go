@@ -41,8 +41,8 @@ type BeaconState struct {
 	ETH1Data                    *phase0.ETH1Data
 	ETH1DataVotes               []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex            uint64
-	Validators                  []*phase0.Validator  `ssz-max:"1099511627776"`
-	Balances                    []phase0.Gwei        `ssz-max:"1099511627776"`
+	Validators                  []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                    []phase0.Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve        uint64
 	CurrentEpochReserve         uint64
 	RANDAOMixes                 []phase0.Root        `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
@@ -56,7 +56,7 @@ type BeaconState struct {
 	InactivityScores            []uint64 `ssz-max:"1099511627776"`
 	CurrentSyncCommittee        *SyncCommittee
 	NextSyncCommittee           *SyncCommittee
-	BailoutScores               []uint64 `ssz-max:"1099511627776"`	
+	BailoutScores               []uint64 `ssz-max:"1099511627776"`
 }
 
 // beaconStateJSON is the spec representation of the struct.

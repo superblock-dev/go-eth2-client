@@ -20,6 +20,7 @@ import (
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
@@ -37,9 +38,10 @@ type beaconBlockBodyYAML struct {
 	VoluntaryExits        []*phase0.SignedVoluntaryExit         `yaml:"voluntary_exits"`
 	SyncAggregate         *altair.SyncAggregate                 `yaml:"sync_aggregate"`
 	BailOuts              []*altair.BailOut                     `yaml:"bail_outs"`
-	ExecutionPayload      *ExecutionPayload                     `yaml:"execution_payload"`
+	ExecutionPayload      *deneb.ExecutionPayload               `yaml:"execution_payload"`
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
 	BlobKZGCommitments    []string                              `yaml:"blob_kzg_commitments"`
+	ExecutionRequests     *ExecutionRequests                    `yaml:"execution_requests"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -63,6 +65,7 @@ func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 		ExecutionPayload:      b.ExecutionPayload,
 		BLSToExecutionChanges: b.BLSToExecutionChanges,
 		BlobKZGCommitments:    blobKZGCommitments,
+		ExecutionRequests:     b.ExecutionRequests,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

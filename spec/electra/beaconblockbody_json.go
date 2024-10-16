@@ -22,6 +22,7 @@ import (
 	"github.com/attestantio/go-eth2-client/codecs"
 	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
+	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
@@ -38,9 +39,10 @@ type beaconBlockBodyJSON struct {
 	VoluntaryExits        []*phase0.SignedVoluntaryExit         `json:"voluntary_exits"`
 	SyncAggregate         *altair.SyncAggregate                 `json:"sync_aggregate"`
 	BailOuts              []*altair.BailOut                     `json:"bail_outs"`
-	ExecutionPayload      *ExecutionPayload                     `json:"execution_payload"`
+	ExecutionPayload      *deneb.ExecutionPayload               `json:"execution_payload"`
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
 	BlobKZGCommitments    []string                              `json:"blob_kzg_commitments"`
+	ExecutionRequests     *ExecutionRequests                    `json:"execution_requests"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -64,10 +66,13 @@ func (b *BeaconBlockBody) MarshalJSON() ([]byte, error) {
 		ExecutionPayload:      b.ExecutionPayload,
 		BLSToExecutionChanges: b.BLSToExecutionChanges,
 		BlobKZGCommitments:    blobKZGCommitments,
+		ExecutionRequests:     b.ExecutionRequests,
 	})
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
+//
+//nolint:gocyclo
 func (b *BeaconBlockBody) UnmarshalJSON(input []byte) error {
 	raw, err := codecs.RawJSON(&beaconBlockBodyJSON{}, input)
 	if err != nil {
@@ -149,7 +154,6 @@ func (b *BeaconBlockBody) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "sync_aggregate")
 	}
 
-
 	if err := json.Unmarshal(raw["bail_outs"], &b.BailOuts); err != nil {
 		return errors.Wrap(err, "bail_outs")
 	}
@@ -174,6 +178,10 @@ func (b *BeaconBlockBody) UnmarshalJSON(input []byte) error {
 
 	if err := json.Unmarshal(raw["blob_kzg_commitments"], &b.BlobKZGCommitments); err != nil {
 		return errors.Wrap(err, "blob_kzg_commitments")
+	}
+
+	if err := json.Unmarshal(raw["execution_requests"], &b.ExecutionRequests); err != nil {
+		return errors.Wrap(err, "execution_requests")
 	}
 
 	return nil
