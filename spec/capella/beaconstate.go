@@ -42,8 +42,8 @@ type BeaconState struct {
 	ETH1Data                     *phase0.ETH1Data
 	ETH1DataVotes                []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex             uint64
-	Validators                   []*phase0.Validator         `ssz-max:"1099511627776"`
-	Balances                     []phase0.Gwei               `ssz-max:"1099511627776"`
+	Validators                   []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                     []phase0.Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve         uint64
 	CurrentEpochReserve          uint64
 	RANDAOMixes                  []phase0.Root               `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
@@ -57,7 +57,6 @@ type BeaconState struct {
 	InactivityScores             []uint64 `ssz-max:"1099511627776"`
 	CurrentSyncCommittee         *altair.SyncCommittee
 	NextSyncCommittee            *altair.SyncCommittee
-	BailoutScores                []uint64 `ssz-max:"1099511627776"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader
 	NextWithdrawalIndex          WithdrawalIndex
 	NextWithdrawalValidatorIndex phase0.ValidatorIndex
@@ -93,7 +92,6 @@ type beaconStateJSON struct {
 	InactivityScores             []string                  `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee     `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee     `json:"next_sync_committee"`
-	BailoutScores                []string                  `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader   `json:"latest_execution_payload_header"`
 	NextWithdrawalIndex          string                    `json:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex string                    `json:"next_withdrawal_validator_index"`
@@ -129,7 +127,6 @@ type beaconStateYAML struct {
 	InactivityScores             []uint64                  `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee     `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee     `json:"next_sync_committee"`
-	BailoutScores                []uint64                  `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader   `json:"latest_execution_payload_header"`
 	NextWithdrawalIndex          uint64                    `json:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex uint64                    `json:"next_withdrawal_validator_index"`
@@ -174,10 +171,6 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 	for i := range s.InactivityScores {
 		inactivityScores[i] = strconv.FormatUint(s.InactivityScores[i], 10)
 	}
-	bailoutScores := make([]string, len(s.BailoutScores))
-	for i := range s.BailoutScores {
-		bailoutScores[i] = strconv.FormatUint(s.BailoutScores[i], 10)
-	}
 
 	return json.Marshal(&beaconStateJSON{
 		GenesisTime:                  strconv.FormatUint(s.GenesisTime, 10),
@@ -207,14 +200,12 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		InactivityScores:             inactivityScores,
 		CurrentSyncCommittee:         s.CurrentSyncCommittee,
 		NextSyncCommittee:            s.NextSyncCommittee,
-		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: s.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          fmt.Sprintf("%d", s.NextWithdrawalIndex),
 		NextWithdrawalValidatorIndex: fmt.Sprintf("%d", s.NextWithdrawalValidatorIndex),
 		HistoricalSummaries:          s.HistoricalSummaries,
 	})
 }
-
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (s *BeaconState) UnmarshalJSON(input []byte) error {
@@ -449,15 +440,6 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 		return errors.New("next sync committee missing")
 	}
 	s.NextSyncCommittee = data.NextSyncCommittee
-	s.BailoutScores = make([]uint64, len(data.BailoutScores))
-	for i := range data.BailoutScores {
-		if data.BailoutScores[i] == "" {
-			return fmt.Errorf("bailout score %d missing", i)
-		}
-		if s.BailoutScores[i], err = strconv.ParseUint(data.BailoutScores[i], 10, 64); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("invalid value for bailout score %d", i))
-		}
-	}
 	s.LatestExecutionPayloadHeader = data.LatestExecutionPayloadHeader
 	if data.NextWithdrawalIndex == "" {
 		return errors.New("next withdrawal index missing")
@@ -522,10 +504,6 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 	for i := range s.CurrentEpochParticipation {
 		currentEpochParticipation[i] = uint8(s.CurrentEpochParticipation[i])
 	}
-	bailoutScores := make([]uint64, len(s.BailoutScores))
-	for i := range s.BailoutScores {
-		bailoutScores[i] = uint64(s.BailoutScores[i])
-	}
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconStateYAML{
 		GenesisTime:                  s.GenesisTime,
 		GenesisValidatorsRoot:        fmt.Sprintf("%#x", s.GenesisValidatorsRoot),
@@ -554,7 +532,6 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 		InactivityScores:             s.InactivityScores,
 		CurrentSyncCommittee:         s.CurrentSyncCommittee,
 		NextSyncCommittee:            s.NextSyncCommittee,
-		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: s.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          uint64(s.NextWithdrawalIndex),
 		NextWithdrawalValidatorIndex: uint64(s.NextWithdrawalValidatorIndex),
@@ -577,9 +554,6 @@ func (s *BeaconState) UnmarshalYAML(input []byte) error {
 
 	return s.unpack(&data)
 }
-
-
-
 
 // String returns a string version of the structure.
 func (s *BeaconState) String() string {

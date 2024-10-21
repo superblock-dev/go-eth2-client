@@ -34,10 +34,13 @@ import (
 )
 
 // defaultUserAgent is sent with requests if no other user agent has been supplied.
-const defaultUserAgent = "go-eth2-client/0.21.4"
+const defaultUserAgent = "go-eth2-client/0.21.11"
 
 // post sends an HTTP post request and returns the body.
 func (s *Service) post(ctx context.Context, endpoint string, body io.Reader) (io.Reader, error) {
+	ctx, span := otel.Tracer("attestantio.go-eth2-client.http").Start(ctx, "post")
+	defer span.End()
+
 	// #nosec G404
 	log := s.log.With().Str("id", fmt.Sprintf("%02x", rand.Int31())).Str("address", s.address).Str("endpoint", endpoint).Logger()
 	if e := log.Trace(); e.Enabled() {
@@ -47,17 +50,22 @@ func (s *Service) post(ctx context.Context, endpoint string, body io.Reader) (io
 		}
 		body = bytes.NewReader(bodyBytes)
 
-		e.Str("body", string(bodyBytes)).Msg("POST request")
+		e.RawJSON("body", bodyBytes).Msg("POST request")
 	}
 
 	callURL := urlForCall(s.base, endpoint, "")
+	log.Trace().Str("url", callURL.String()).Msg("URL to POST")
+	span.SetAttributes(attribute.String("url", callURL.String()))
 
 	opCtx, cancel := context.WithTimeout(ctx, s.timeout)
 	defer cancel()
 	req, err := http.NewRequestWithContext(opCtx, http.MethodPost, callURL.String(), body)
 	if err != nil {
+		span.SetStatus(codes.Error, "Failed to create request")
+
 		return nil, errors.Join(errors.New("failed to create POST request"), err)
 	}
+
 	s.addExtraHeaders(req)
 	req.Header.Set("Content-Type", "application/json")
 	req.Header.Set("Accept", "application/json")
@@ -68,21 +76,29 @@ func (s *Service) post(ctx context.Context, endpoint string, body io.Reader) (io
 	resp, err := s.client.Do(req)
 	if err != nil {
 		go s.CheckConnectionState(ctx)
+
+		span.SetStatus(codes.Error, err.Error())
 		s.monitorPostComplete(ctx, callURL.Path, "failed")
 
 		return nil, errors.Join(errors.New("failed to call POST endpoint"), err)
 	}
 	defer resp.Body.Close()
+	log = log.With().Int("status_code", resp.StatusCode).Logger()
 
 	data, err := io.ReadAll(resp.Body)
 	if err != nil {
+		span.SetStatus(codes.Error, err.Error())
+		s.monitorPostComplete(ctx, callURL.Path, "failed")
+
 		return nil, errors.Join(errors.New("failed to read POST response"), err)
 	}
 
-	statusFamily := resp.StatusCode / 100
+	statusFamily := statusCodeFamily(resp.StatusCode)
 	if statusFamily != 2 {
-		log.Debug().Int("status_code", resp.StatusCode).Str("data", string(data)).Msg("POST failed")
+		trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(data, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
+		log.Debug().Int("status_code", resp.StatusCode).RawJSON("response", trimmedResponse).Msg("POST failed")
 
+		span.SetStatus(codes.Error, fmt.Sprintf("Status code %d", resp.StatusCode))
 		s.monitorPostComplete(ctx, callURL.Path, "failed")
 
 		return nil, &api.Error{
@@ -100,12 +116,10 @@ func (s *Service) post(ctx context.Context, endpoint string, body io.Reader) (io
 }
 
 // post2 sends an HTTP post request and returns the body.
-//
-//nolint:unparam
 func (s *Service) post2(ctx context.Context,
 	endpoint string,
 	query string,
-	_ *api.CommonOpts,
+	opts *api.CommonOpts,
 	body io.Reader,
 	contentType ContentType,
 	headers map[string]string,
@@ -127,7 +141,7 @@ func (s *Service) post2(ctx context.Context,
 			}
 			body = bytes.NewReader(bodyBytes)
 
-			e.Str("body", string(bodyBytes)).Msg("POST request")
+			e.RawJSON("body", bodyBytes).Msg("POST request")
 		default:
 			e.Str("content_type", contentType.String()).Msg("POST request")
 		}
@@ -137,7 +151,12 @@ func (s *Service) post2(ctx context.Context,
 	log.Trace().Str("url", callURL.String()).Msg("URL to POST")
 	span.SetAttributes(attribute.String("url", callURL.String()))
 
-	opCtx, cancel := context.WithTimeout(ctx, s.timeout)
+	timeout := s.timeout
+	if opts.Timeout != 0 {
+		timeout = opts.Timeout
+	}
+
+	opCtx, cancel := context.WithTimeout(ctx, timeout)
 	defer cancel()
 	req, err := http.NewRequestWithContext(opCtx, http.MethodPost, callURL.String(), body)
 	if err != nil {
@@ -217,16 +236,20 @@ func (s *Service) post2(ctx context.Context,
 	))
 
 	if res.contentType == ContentTypeJSON {
-		trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(res.body, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
 		if e := log.Trace(); e.Enabled() {
+			trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(res.body, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
 			e.RawJSON("body", trimmedResponse).Msg("POST response")
 		}
 	}
 
-	statusFamily := resp.StatusCode / 100
+	statusFamily := statusCodeFamily(resp.StatusCode)
 	if statusFamily != 2 {
-		trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(res.body, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
-		log.Debug().Int("status_code", resp.StatusCode).RawJSON("response", trimmedResponse).Msg("POST failed")
+		if res.contentType == ContentTypeJSON {
+			trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(res.body, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
+			log.Debug().Int("status_code", resp.StatusCode).RawJSON("response", trimmedResponse).Msg("POST failed")
+		} else {
+			log.Debug().Int("status_code", resp.StatusCode).Msg("POST failed")
+		}
 
 		span.SetStatus(codes.Error, fmt.Sprintf("Status code %d", resp.StatusCode))
 		s.monitorPostComplete(ctx, callURL.Path, "failed")
@@ -264,10 +287,13 @@ type httpResponse struct {
 }
 
 // get sends an HTTP get request and returns the response.
+//
+//nolint:revive
 func (s *Service) get(ctx context.Context,
 	endpoint string,
 	query string,
 	opts *api.CommonOpts,
+	supportsSSZ bool,
 ) (
 	*httpResponse,
 	error,
@@ -298,7 +324,7 @@ func (s *Service) get(ctx context.Context,
 	}
 
 	s.addExtraHeaders(req)
-	if s.enforceJSON {
+	if s.enforceJSON || !supportsSSZ {
 		// JSON only.
 		req.Header.Set("Accept", "application/json")
 	} else {
@@ -381,7 +407,7 @@ func (s *Service) get(ctx context.Context,
 		}
 	}
 
-	statusFamily := resp.StatusCode / 100
+	statusFamily := statusCodeFamily(resp.StatusCode)
 	if statusFamily != 2 {
 		trimmedResponse := bytes.ReplaceAll(bytes.ReplaceAll(res.body, []byte{0x0a}, []byte{}), []byte{0x0d}, []byte{})
 		log.Debug().Int("status_code", resp.StatusCode).RawJSON("response", trimmedResponse).Msg("GET failed")
@@ -442,6 +468,14 @@ func populateHeaders(res *httpResponse, resp *http.Response) {
 }
 
 func populateContentType(res *httpResponse, resp *http.Response) error {
+	if len(res.body) == 0 {
+		// There's no body to decode.  Some servers don't send a content type in this
+		// situation, but it doesn't matter anyway; set it to JSON and return.
+		res.contentType = ContentTypeJSON
+
+		return nil
+	}
+
 	respContentTypes, exists := resp.Header["Content-Type"]
 	if !exists {
 		return errors.New("no content type supplied in response")
@@ -482,4 +516,8 @@ func urlForCall(base *url.URL,
 	}
 
 	return &callURL
+}
+
+func statusCodeFamily(status int) int {
+	return status / 100
 }

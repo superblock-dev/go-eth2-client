@@ -29,20 +29,23 @@ import (
 
 // beaconStateJSON is the spec representation of the struct.
 type beaconStateJSON struct {
-	GenesisTime           string                    `json:"genesis_time"`
-	GenesisValidatorsRoot phase0.Root               `json:"genesis_validators_root"`
-	Slot                  phase0.Slot               `json:"slot"`
-	Fork                  *phase0.Fork              `json:"fork"`
-	LatestBlockHeader     *phase0.BeaconBlockHeader `json:"latest_block_header"`
-	BlockRoots            []phase0.Root             `json:"block_roots"`
-	StateRoots            []phase0.Root             `json:"state_roots"`
-	HistoricalRoots       []phase0.Root             `json:"historical_roots"`
-	ETH1Data              *phase0.ETH1Data          `json:"eth1_data"`
+	GenesisTime            string                    `json:"genesis_time"`
+	GenesisValidatorsRoot  phase0.Root               `json:"genesis_validators_root"`
+	Slot                   phase0.Slot               `json:"slot"`
+	Fork                   *phase0.Fork              `json:"fork"`
+	LatestBlockHeader      *phase0.BeaconBlockHeader `json:"latest_block_header"`
+	BlockRoots             []phase0.Root             `json:"block_roots"`
+	StateRoots             []phase0.Root             `json:"state_roots"`
+	HistoricalRoots        []phase0.Root             `json:"historical_roots"`
+	RewardAdjustmentFactor string                    `json:"reward_adjustment_factor"`
+	ETH1Data               *phase0.ETH1Data          `json:"eth1_data"`
 	//nolint:staticcheck
 	ETH1DataVotes                []*phase0.ETH1Data           `json:"eth1_data_votes,allowempty"`
 	ETH1DepositIndex             string                       `json:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator          `json:"validators"`
 	Balances                     []string                     `json:"balances"`
+	PreviousEpochReserve         string                       `json:"previous_epoch_reserve"`
+	CurrentEpochReserve          string                       `json:"current_epoch_reserve"`
 	RANDAOMixes                  []string                     `json:"randao_mixes"`
 	Slashings                    []string                     `json:"slashings"`
 	PreviousEpochParticipation   []string                     `json:"previous_epoch_participation"`
@@ -96,11 +99,14 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		BlockRoots:                   b.BlockRoots,
 		StateRoots:                   b.StateRoots,
 		HistoricalRoots:              b.HistoricalRoots,
+		RewardAdjustmentFactor:       strconv.FormatUint(b.RewardAdjustmentFactor, 10),
 		ETH1Data:                     b.ETH1Data,
 		ETH1DataVotes:                b.ETH1DataVotes,
 		ETH1DepositIndex:             strconv.FormatUint(b.ETH1DepositIndex, 10),
 		Validators:                   b.Validators,
 		Balances:                     balances,
+		PreviousEpochReserve:         strconv.FormatUint(b.PreviousEpochReserve, 10),
+		CurrentEpochReserve:          strconv.FormatUint(b.CurrentEpochReserve, 10),
 		RANDAOMixes:                  randaoMixes,
 		Slashings:                    slashings,
 		PreviousEpochParticipation:   previousEpochParticipation,
@@ -163,6 +169,11 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "historical_roots")
 	}
 
+	rewardAdjustmentFactor := string(bytes.Trim(raw["reward_adjustment_factor"], `"`))
+	if b.RewardAdjustmentFactor, err = strconv.ParseUint(rewardAdjustmentFactor, 10, 64); err != nil {
+		return errors.Wrap(err, "reward_adjustment_factor")
+	}
+
 	b.ETH1Data = &phase0.ETH1Data{}
 	if err := b.ETH1Data.UnmarshalJSON(raw["eth1_data"]); err != nil {
 		return errors.Wrap(err, "eth1_data")
@@ -193,6 +204,16 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 
 	if err := json.Unmarshal(raw["balances"], &b.Balances); err != nil {
 		return errors.Wrap(err, "balances")
+	}
+
+	previousEpochReserve := string(bytes.Trim(raw["previous_epoch_reserve"], `"`))
+	if b.PreviousEpochReserve, err = strconv.ParseUint(previousEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "previous_epoch_reserve")
+	}
+
+	currentEpochReserve := string(bytes.Trim(raw["current_epoch_reserve"], `"`))
+	if b.CurrentEpochReserve, err = strconv.ParseUint(currentEpochReserve, 10, 64); err != nil {
+		return errors.Wrap(err, "current_epoch_reserve")
 	}
 
 	if err := json.Unmarshal(raw["randao_mixes"], &b.RANDAOMixes); err != nil {

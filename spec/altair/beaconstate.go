@@ -41,8 +41,8 @@ type BeaconState struct {
 	ETH1Data                    *phase0.ETH1Data
 	ETH1DataVotes               []*phase0.ETH1Data `ssz-max:"2048"`
 	ETH1DepositIndex            uint64
-	Validators                  []*phase0.Validator  `ssz-max:"1099511627776"`
-	Balances                    []phase0.Gwei        `ssz-max:"1099511627776"`
+	Validators                  []*phase0.Validator `ssz-max:"1099511627776"`
+	Balances                    []phase0.Gwei       `ssz-max:"1099511627776"`
 	PreviousEpochReserve        uint64
 	CurrentEpochReserve         uint64
 	RANDAOMixes                 []phase0.Root        `dynssz-size:"EPOCHS_PER_HISTORICAL_VECTOR,32" ssz-size:"65536,32"`
@@ -56,7 +56,6 @@ type BeaconState struct {
 	InactivityScores            []uint64 `ssz-max:"1099511627776"`
 	CurrentSyncCommittee        *SyncCommittee
 	NextSyncCommittee           *SyncCommittee
-	BailoutScores               []uint64 `ssz-max:"1099511627776"`	
 }
 
 // beaconStateJSON is the spec representation of the struct.
@@ -88,7 +87,6 @@ type beaconStateJSON struct {
 	InactivityScores            []string                  `json:"inactivity_scores"`
 	CurrentSyncCommittee        *SyncCommittee            `json:"current_sync_committee"`
 	NextSyncCommittee           *SyncCommittee            `json:"next_sync_committee"`
-	BailoutScores               []string                  `json:"bailout_scores"`
 }
 
 // beaconStateYAML is the spec representation of the struct.
@@ -120,7 +118,6 @@ type beaconStateYAML struct {
 	InactivityScores            []uint64                  `json:"inactivity_scores"`
 	CurrentSyncCommittee        *SyncCommittee            `json:"current_sync_committee"`
 	NextSyncCommittee           *SyncCommittee            `json:"next_sync_committee"`
-	BailoutScores               []uint64                  `json:"bailout_scores"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -161,10 +158,6 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 	for i := range s.InactivityScores {
 		inactivityScores[i] = strconv.FormatUint(s.InactivityScores[i], 10)
 	}
-	bailoutScores := make([]string, len(s.BailoutScores))
-	for i := range s.BailoutScores {
-		bailoutScores[i] = strconv.FormatUint(s.BailoutScores[i], 10)
-	}
 
 	return json.Marshal(&beaconStateJSON{
 		GenesisTime:                 strconv.FormatUint(s.GenesisTime, 10),
@@ -194,7 +187,6 @@ func (s *BeaconState) MarshalJSON() ([]byte, error) {
 		InactivityScores:            inactivityScores,
 		CurrentSyncCommittee:        s.CurrentSyncCommittee,
 		NextSyncCommittee:           s.NextSyncCommittee,
-		BailoutScores:               bailoutScores,
 	})
 }
 
@@ -431,16 +423,6 @@ func (s *BeaconState) unpack(data *beaconStateJSON) error {
 		return errors.New("next sync committee missing")
 	}
 	s.NextSyncCommittee = data.NextSyncCommittee
-	s.BailoutScores = make([]uint64, len(data.BailoutScores))
-	for i := range data.BailoutScores {
-		if data.BailoutScores[i] == "" {
-			return fmt.Errorf("bailout score %d missing", i)
-		}
-		if s.BailoutScores[i], err = strconv.ParseUint(data.BailoutScores[i], 10, 64); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("invalid value for bailout score %d", i))
-		}
-	}
-
 	return nil
 }
 
@@ -478,10 +460,6 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 	for i := range s.CurrentEpochParticipation {
 		currentEpochParticipation[i] = uint8(s.CurrentEpochParticipation[i])
 	}
-	bailoutScores := make([]uint64, len(s.BailoutScores))
-	for i := range s.BailoutScores {
-		bailoutScores[i] = uint64(s.BailoutScores[i])
-	}
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconStateYAML{
 		GenesisTime:                 s.GenesisTime,
 		GenesisValidatorsRoot:       fmt.Sprintf("%#x", s.GenesisValidatorsRoot),
@@ -510,7 +488,6 @@ func (s *BeaconState) MarshalYAML() ([]byte, error) {
 		InactivityScores:            s.InactivityScores,
 		CurrentSyncCommittee:        s.CurrentSyncCommittee,
 		NextSyncCommittee:           s.NextSyncCommittee,
-		BailoutScores:               bailoutScores,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

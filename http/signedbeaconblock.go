@@ -19,6 +19,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/attestantio/go-eth2-client/spec/electra"
+
 	client "github.com/attestantio/go-eth2-client"
 	"github.com/attestantio/go-eth2-client/api"
 	"github.com/attestantio/go-eth2-client/spec"
@@ -45,7 +47,7 @@ func (s *Service) SignedBeaconBlock(ctx context.Context,
 	}
 
 	endpoint := fmt.Sprintf("/eth/v2/beacon/blocks/%s", opts.Block)
-	httpResponse, err := s.get(ctx, endpoint, "", &opts.Common)
+	httpResponse, err := s.get(ctx, endpoint, "", &opts.Common, true)
 	if err != nil {
 		return nil, err
 	}
@@ -141,6 +143,16 @@ func (s *Service) signedBeaconBlockFromSSZ(ctx context.Context,
 		if err != nil {
 			return nil, errors.Join(errors.New("failed to decode deneb signed block contents"), err)
 		}
+	case spec.DataVersionElectra:
+		response.Data.Electra = &electra.SignedBeaconBlock{}
+		if s.customSpecSupport {
+			err = dynSSZ.UnmarshalSSZ(response.Data.Electra, res.body)
+		} else {
+			err = response.Data.Electra.UnmarshalSSZ(res.body)
+		}
+		if err != nil {
+			return nil, errors.Join(errors.New("failed to decode deneb signed block contents"), err)
+		}
 	default:
 		return nil, fmt.Errorf("unhandled block version %s", res.consensusVersion)
 	}
@@ -176,6 +188,10 @@ func (*Service) signedBeaconBlockFromJSON(res *httpResponse) (*api.Response[*spe
 	case spec.DataVersionDeneb:
 		response.Data.Deneb, response.Metadata, err = decodeJSONResponse(bytes.NewReader(res.body),
 			&deneb.SignedBeaconBlock{},
+		)
+	case spec.DataVersionElectra:
+		response.Data.Electra, response.Metadata, err = decodeJSONResponse(bytes.NewReader(res.body),
+			&electra.SignedBeaconBlock{},
 		)
 	default:
 		return nil, fmt.Errorf("unhandled version %s", res.consensusVersion)
