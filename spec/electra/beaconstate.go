@@ -53,7 +53,6 @@ type BeaconState struct {
 	InactivityScores              []uint64 `ssz-max:"1099511627776"`
 	CurrentSyncCommittee          *altair.SyncCommittee
 	NextSyncCommittee             *altair.SyncCommittee
-	BailoutScores                 []uint64 `ssz-max:"1099511627776"`
 	LatestExecutionPayloadHeader  *deneb.ExecutionPayloadHeader
 	NextWithdrawalIndex           capella.WithdrawalIndex
 	NextWithdrawalValidatorIndex  phase0.ValidatorIndex

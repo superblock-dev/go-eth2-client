@@ -36,7 +36,6 @@ type BeaconBlockBody struct {
 	Deposits          []*phase0.Deposit             `ssz-max:"16"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `ssz-max:"16"`
 	SyncAggregate     *SyncAggregate
-	BailOuts          []*BailOut `ssz-max:"16"`
 }
 
 // beaconBlockBodyJSON is the spec representation of the struct.
@@ -50,7 +49,6 @@ type beaconBlockBodyJSON struct {
 	Deposits          []*phase0.Deposit             `json:"deposits"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
 	SyncAggregate     *SyncAggregate                `json:"sync_aggregate"`
-	BailOuts          []*BailOut                    `json:"bail_outs"`
 }
 
 // beaconBlockBodyYAML is the spec representation of the struct.
@@ -64,7 +62,6 @@ type beaconBlockBodyYAML struct {
 	Deposits          []*phase0.Deposit             `yaml:"deposits"`
 	VoluntaryExits    []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
 	SyncAggregate     *SyncAggregate                `yaml:"sync_aggregate"`
-	BailOuts          []*BailOut                    `yaml:"bail_outs"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -79,7 +76,6 @@ func (b *BeaconBlockBody) MarshalJSON() ([]byte, error) {
 		Deposits:          b.Deposits,
 		VoluntaryExits:    b.VoluntaryExits,
 		SyncAggregate:     b.SyncAggregate,
-		BailOuts:          b.BailOuts,
 	})
 }
 
@@ -169,15 +165,6 @@ func (b *BeaconBlockBody) unpack(beaconBlockBodyJSON *beaconBlockBodyJSON) error
 		return errors.New("sync aggregate missing")
 	}
 	b.SyncAggregate = beaconBlockBodyJSON.SyncAggregate
-	if beaconBlockBodyJSON.BailOuts == nil {
-		return errors.New("bail outs missing")
-	}
-	for i := range beaconBlockBodyJSON.BailOuts {
-		if beaconBlockBodyJSON.BailOuts[i] == nil {
-			return fmt.Errorf("bail outs entry %d missing", i)
-		}
-	}
-	b.BailOuts = beaconBlockBodyJSON.BailOuts
 
 	return nil
 }
@@ -194,7 +181,6 @@ func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 		Deposits:          b.Deposits,
 		VoluntaryExits:    b.VoluntaryExits,
 		SyncAggregate:     b.SyncAggregate,
-		BailOuts:          b.BailOuts,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

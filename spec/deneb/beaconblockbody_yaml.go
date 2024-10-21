@@ -36,7 +36,6 @@ type beaconBlockBodyYAML struct {
 	Deposits              []*phase0.Deposit                     `yaml:"deposits"`
 	VoluntaryExits        []*phase0.SignedVoluntaryExit         `yaml:"voluntary_exits"`
 	SyncAggregate         *altair.SyncAggregate                 `yaml:"sync_aggregate"`
-	BailOuts              []*altair.BailOut                     `yaml:"bail_outs"`
 	ExecutionPayload      *ExecutionPayload                     `yaml:"execution_payload"`
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
 	BlobKZGCommitments    []string                              `yaml:"blob_kzg_commitments"`
@@ -59,7 +58,6 @@ func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 		Deposits:              b.Deposits,
 		VoluntaryExits:        b.VoluntaryExits,
 		SyncAggregate:         b.SyncAggregate,
-		BailOuts:              b.BailOuts,
 		ExecutionPayload:      b.ExecutionPayload,
 		BLSToExecutionChanges: b.BLSToExecutionChanges,
 		BlobKZGCommitments:    blobKZGCommitments,

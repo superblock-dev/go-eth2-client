@@ -57,7 +57,6 @@ type beaconStateJSON struct {
 	InactivityScores             []string                     `json:"inactivity_scores"`
 	CurrentSyncCommittee         *altair.SyncCommittee        `json:"current_sync_committee"`
 	NextSyncCommittee            *altair.SyncCommittee        `json:"next_sync_committee"`
-	BailoutScores                []string                     `json:"bailout_scores"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader      `json:"latest_execution_payload_header"`
 	NextWithdrawalIndex          string                       `json:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex string                       `json:"next_withdrawal_validator_index"`
@@ -90,10 +89,6 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 	for i := range b.InactivityScores {
 		inactivityScores[i] = strconv.FormatUint(b.InactivityScores[i], 10)
 	}
-	bailoutScores := make([]string, len(b.BailoutScores))
-	for i := range b.BailoutScores {
-		bailoutScores[i] = strconv.FormatUint(b.BailoutScores[i], 10)
-	}
 
 	return json.Marshal(&beaconStateJSON{
 		GenesisTime:                  strconv.FormatUint(b.GenesisTime, 10),
@@ -123,7 +118,6 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		InactivityScores:             inactivityScores,
 		CurrentSyncCommittee:         b.CurrentSyncCommittee,
 		NextSyncCommittee:            b.NextSyncCommittee,
-		BailoutScores:                bailoutScores,
 		LatestExecutionPayloadHeader: b.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          fmt.Sprintf("%d", b.NextWithdrawalIndex),
 		NextWithdrawalValidatorIndex: fmt.Sprintf("%d", b.NextWithdrawalValidatorIndex),
@@ -280,20 +274,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 	b.NextSyncCommittee = &altair.SyncCommittee{}
 	if err := b.NextSyncCommittee.UnmarshalJSON(raw["next_sync_committee"]); err != nil {
 		return errors.Wrap(err, "next_sync_committee")
-	}
-
-	bailoutScores := make([]string, 0)
-	if err := json.Unmarshal(raw["bailout_scores"], &bailoutScores); err != nil {
-		return errors.Wrap(err, "bailout_scores")
-	}
-	b.BailoutScores = make([]uint64, len(bailoutScores))
-	for i := range bailoutScores {
-		if bailoutScores[i] == "" {
-			return fmt.Errorf("bailout score %d missing", i)
-		}
-		if b.BailoutScores[i], err = strconv.ParseUint(bailoutScores[i], 10, 64); err != nil {
-			return errors.Wrap(err, fmt.Sprintf("invalid value for bailout score %d", i))
-		}
 	}
 
 	b.LatestExecutionPayloadHeader = &ExecutionPayloadHeader{}
