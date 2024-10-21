@@ -44,7 +44,6 @@ type ExecutionPayload struct {
 	ExcessBlobGas         uint64
 	DepositRequests       []*DepositRequest       `ssz-max:"8192"`
 	WithdrawalRequests    []*WithdrawalRequest    `ssz-max:"16"`
-	ConsolidationRequests []*ConsolidationRequest `ssz-max:"1"`
 }
 
 // String returns a string version of the structure.

@@ -23,7 +23,6 @@ import (
 type ExecutionRequests struct {
 	Deposits       []*DepositRequest       `ssz-max:"8192"`
 	Withdrawals    []*WithdrawalRequest    `ssz-max:"16"`
-	Consolidations []*ConsolidationRequest `ssz-max:"1"`
 }
 
 // String returns a string version of the structure.

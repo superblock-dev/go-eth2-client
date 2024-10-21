@@ -66,11 +66,8 @@ type beaconStateJSON struct {
 	DepositBalanceToConsume       phase0.Gwei                   `json:"deposit_balance_to_consume"`
 	ExitBalanceToConsume          phase0.Gwei                   `json:"exit_balance_to_consume"`
 	EarliestExitEpoch             phase0.Epoch                  `json:"earliest_exit_epoch"`
-	ConsolidationBalanceToConsume phase0.Gwei                   `json:"consolidation_balance_to_consume"`
-	EarliestConsolidationEpoch    phase0.Epoch                  `json:"earliest_consolidation_epoch"`
 	PendingDeposits               []*PendingDeposit             `json:"pending_deposits"`
 	PendingPartialWithdrawals     []*PendingPartialWithdrawal   `json:"pending_partial_withdrawals"`
-	PendingConsolidations         []*PendingConsolidation       `json:"pending_consolidations"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -136,11 +133,8 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 		DepositBalanceToConsume:       b.DepositBalanceToConsume,
 		ExitBalanceToConsume:          b.ExitBalanceToConsume,
 		EarliestExitEpoch:             b.EarliestExitEpoch,
-		ConsolidationBalanceToConsume: b.ConsolidationBalanceToConsume,
-		EarliestConsolidationEpoch:    b.EarliestConsolidationEpoch,
 		PendingDeposits:               b.PendingDeposits,
 		PendingPartialWithdrawals:     b.PendingPartialWithdrawals,
-		PendingConsolidations:         b.PendingConsolidations,
 	})
 }
 
@@ -334,14 +328,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "earliest_exit_epoch")
 	}
 
-	if err := b.ConsolidationBalanceToConsume.UnmarshalJSON(raw["consolidation_balance_to_consume"]); err != nil {
-		return errors.Wrap(err, "consolidation_balance_to_consume")
-	}
-
-	if err := b.EarliestConsolidationEpoch.UnmarshalJSON(raw["earliest_consolidation_epoch"]); err != nil {
-		return errors.Wrap(err, "earliest_consolidation_epoch")
-	}
-
 	if err := json.Unmarshal(raw["pending_deposits"], &b.PendingDeposits); err != nil {
 		return errors.Wrap(err, "pending_deposits")
 	}
@@ -357,15 +343,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 	for i := range b.PendingPartialWithdrawals {
 		if b.PendingPartialWithdrawals[i] == nil {
 			return fmt.Errorf("pending partial withdrawals entry %d missing", i)
-		}
-	}
-
-	if err := json.Unmarshal(raw["pending_consolidations"], &b.PendingConsolidations); err != nil {
-		return errors.Wrap(err, "pending_consolidations")
-	}
-	for i := range b.PendingConsolidations {
-		if b.PendingConsolidations[i] == nil {
-			return fmt.Errorf("pending consolidations entry %d missing", i)
 		}
 	}
 

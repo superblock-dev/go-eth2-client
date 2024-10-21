@@ -49,7 +49,6 @@ type executionPayloadJSON struct {
 	ExcessBlobGas         string                     `json:"excess_blob_gas"`
 	DepositRequests       []*DepositRequest          `json:"deposit_requests"`
 	WithdrawalRequests    []*WithdrawalRequest       `json:"withdrawal_requests"`
-	ConsolidationRequests []*ConsolidationRequest    `json:"consolidation_requests"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -267,15 +266,6 @@ func (e *ExecutionPayload) UnmarshalJSON(input []byte) error {
 			return fmt.Errorf("withdraw requests entry %d missing", i)
 		}
 	}
-
-	if err := json.Unmarshal(raw["consolidation_requests"], &e.ConsolidationRequests); err != nil {
-		return errors.Wrap(err, "consolidation_requests")
-	}
-	for i := range e.ConsolidationRequests {
-		if e.ConsolidationRequests[i] == nil {
-			return fmt.Errorf("consolidation requests entry %d missing", i)
-		}
-	}
-
+	
 	return nil
 }

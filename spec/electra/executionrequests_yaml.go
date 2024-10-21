@@ -25,7 +25,6 @@ import (
 type executionRequestsYAML struct {
 	Deposits       []*DepositRequest       `yaml:"deposits"`
 	Withdrawals    []*WithdrawalRequest    `yaml:"withdrawals"`
-	Consolidations []*ConsolidationRequest `yaml:"consolidations"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -33,7 +32,6 @@ func (e *ExecutionRequests) MarshalYAML() ([]byte, error) {
 	yamlBytes, err := yaml.MarshalWithOptions(&executionRequestsYAML{
 		Deposits:       e.Deposits,
 		Withdrawals:    e.Withdrawals,
-		Consolidations: e.Consolidations,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

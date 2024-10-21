@@ -98,8 +98,6 @@ type PayloadAttributesV4 struct {
 	DepositRequests []*electra.DepositRequest
 	// WithdrawalRequests is the list of withdrawal requests.
 	WithdrawalRequests []*electra.WithdrawalRequest
-	// ConsolidationRequests is the list of consolidation requests.
-	ConsolidationRequests []*electra.ConsolidationRequest
 }
 
 // payloadAttributesEventJSON is the spec representation of the event.
@@ -151,7 +149,6 @@ type payloadAttributesV4JSON struct {
 	ParentBeaconBlockRoot string                          `json:"parent_beacon_block_root"`
 	DepositRequests       []*electra.DepositRequest       `json:"deposit_requests"`
 	WithdrawalRequests    []*electra.WithdrawalRequest    `json:"withdrawal_requests"`
-	ConsolidationRequests []*electra.ConsolidationRequest `json:"consolidation_requests"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -417,16 +414,6 @@ func (p *PayloadAttributesV4) unpack(data *payloadAttributesV4JSON) error {
 	}
 	p.WithdrawalRequests = data.WithdrawalRequests
 
-	if data.ConsolidationRequests == nil {
-		return errors.New("payload attributes consolidation requests missing")
-	}
-	for i := range data.ConsolidationRequests {
-		if data.ConsolidationRequests[i] == nil {
-			return fmt.Errorf("consolidation requests entry %d missing", i)
-		}
-	}
-	p.ConsolidationRequests = data.ConsolidationRequests
-
 	return nil
 }
 
@@ -487,7 +474,6 @@ func (e *PayloadAttributesEvent) MarshalJSON() ([]byte, error) {
 			ParentBeaconBlockRoot: fmt.Sprintf("%#x", e.Data.V4.ParentBeaconBlockRoot),
 			DepositRequests:       e.Data.V4.DepositRequests,
 			WithdrawalRequests:    e.Data.V4.WithdrawalRequests,
-			ConsolidationRequests: e.Data.V4.ConsolidationRequests,
 		})
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to marshal payload attributes v4")

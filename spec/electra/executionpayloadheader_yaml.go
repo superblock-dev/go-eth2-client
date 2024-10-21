@@ -45,7 +45,6 @@ type executionPayloadHeaderYAML struct {
 	ExcessBlobGas             uint64                     `yaml:"excess_blob_gas"`
 	DepositRequestsRoot       phase0.Root                `yaml:"deposit_requests_root"`
 	WithdrawalRequestsRoot    phase0.Root                `yaml:"withdrawal_requests_root"`
-	ConsolidationRequestsRoot phase0.Root                `yaml:"consolidation_requests_root"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -75,7 +74,6 @@ func (e *ExecutionPayloadHeader) MarshalYAML() ([]byte, error) {
 		ExcessBlobGas:             e.ExcessBlobGas,
 		DepositRequestsRoot:       e.DepositRequestsRoot,
 		WithdrawalRequestsRoot:    e.WithdrawalRequestsRoot,
-		ConsolidationRequestsRoot: e.ConsolidationRequestsRoot,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

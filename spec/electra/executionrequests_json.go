@@ -25,7 +25,6 @@ import (
 type executionRequestsJSON struct {
 	Deposits       []*DepositRequest       `json:"deposits"`
 	Withdrawals    []*WithdrawalRequest    `json:"withdrawals"`
-	Consolidations []*ConsolidationRequest `json:"consolidations"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -33,7 +32,6 @@ func (e *ExecutionRequests) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&executionRequestsJSON{
 		Deposits:       e.Deposits,
 		Withdrawals:    e.Withdrawals,
-		Consolidations: e.Consolidations,
 	})
 }
 
@@ -59,15 +57,6 @@ func (e *ExecutionRequests) UnmarshalJSON(input []byte) error {
 	for i := range e.Withdrawals {
 		if e.Withdrawals[i] == nil {
 			return fmt.Errorf("withdrawals entry %d missing", i)
-		}
-	}
-
-	if err := json.Unmarshal(raw["consolidations"], &e.Consolidations); err != nil {
-		return errors.Wrap(err, "consolidations")
-	}
-	for i := range e.Consolidations {
-		if e.Consolidations[i] == nil {
-			return fmt.Errorf("consolidation requests entry %d missing", i)
 		}
 	}
 

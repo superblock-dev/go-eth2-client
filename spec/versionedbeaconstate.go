@@ -264,38 +264,6 @@ func (v *VersionedBeaconState) EarliestExitEpoch() (phase0.Epoch, error) {
 	}
 }
 
-// ConsolidationBalanceToConsume returns the consolidation balance to consume of the state.
-func (v *VersionedBeaconState) ConsolidationBalanceToConsume() (phase0.Gwei, error) {
-	switch v.Version {
-	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
-		return 0, errors.New("state does not provide consolidation balance to consume")
-	case DataVersionElectra:
-		if v.Electra == nil {
-			return 0, errors.New("no Electra state")
-		}
-
-		return v.Electra.ConsolidationBalanceToConsume, nil
-	default:
-		return 0, errors.New("unknown version")
-	}
-}
-
-// EarliestConsolidationEpoch returns the earliest consolidation epoch of the state.
-func (v *VersionedBeaconState) EarliestConsolidationEpoch() (phase0.Epoch, error) {
-	switch v.Version {
-	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
-		return 0, errors.New("state does not provide earliest consolidation epoch")
-	case DataVersionElectra:
-		if v.Electra == nil {
-			return 0, errors.New("no Electra state")
-		}
-
-		return v.Electra.EarliestConsolidationEpoch, nil
-	default:
-		return 0, errors.New("unknown version")
-	}
-}
-
 // PendingDeposits returns the pending deposits of the state.
 func (v *VersionedBeaconState) PendingDeposits() ([]*electra.PendingDeposit, error) {
 	switch v.Version {
@@ -323,22 +291,6 @@ func (v *VersionedBeaconState) PendingPartialWithdrawals() ([]*electra.PendingPa
 		}
 
 		return v.Electra.PendingPartialWithdrawals, nil
-	default:
-		return nil, errors.New("unknown version")
-	}
-}
-
-// PendingConsolidations returns the pending consolidations of the state.
-func (v *VersionedBeaconState) PendingConsolidations() ([]*electra.PendingConsolidation, error) {
-	switch v.Version {
-	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
-		return nil, errors.New("state does not provide pending consolidations")
-	case DataVersionElectra:
-		if v.Electra == nil {
-			return nil, errors.New("no Electra state")
-		}
-
-		return v.Electra.PendingConsolidations, nil
 	default:
 		return nil, errors.New("unknown version")
 	}

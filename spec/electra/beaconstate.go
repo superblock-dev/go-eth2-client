@@ -61,11 +61,8 @@ type BeaconState struct {
 	DepositBalanceToConsume       phase0.Gwei
 	ExitBalanceToConsume          phase0.Gwei
 	EarliestExitEpoch             phase0.Epoch
-	ConsolidationBalanceToConsume phase0.Gwei
-	EarliestConsolidationEpoch    phase0.Epoch
 	PendingDeposits               []*PendingDeposit           `ssz-max:"134217728"`
 	PendingPartialWithdrawals     []*PendingPartialWithdrawal `ssz-max:"134217728"`
-	PendingConsolidations         []*PendingConsolidation     `ssz-max:"262144"`
 }
 
 // String returns a string version of the structure.

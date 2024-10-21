@@ -63,11 +63,8 @@ type beaconStateYAML struct {
 	DepositBalanceToConsume       phase0.Gwei                   `yaml:"deposit_balance_to_consume"`
 	ExitBalanceToConsume          phase0.Gwei                   `yaml:"exit_balance_to_consume"`
 	EarliestExitEpoch             phase0.Epoch                  `yaml:"earliest_exit_epoch"`
-	ConsolidationBalanceToConsume phase0.Gwei                   `yaml:"consolidation_balance_to_consume"`
-	EarliestConsolidationEpoch    phase0.Epoch                  `yaml:"earliest_consolidation_epoch"`
 	PendingDeposits               []*PendingDeposit             `yaml:"pending_deposits"`
 	PendingPartialWithdrawals     []*PendingPartialWithdrawal   `yaml:"pending_partial_withdrawals"`
-	PendingConsolidations         []*PendingConsolidation       `yaml:"pending_consolidations"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -108,11 +105,8 @@ func (b *BeaconState) MarshalYAML() ([]byte, error) {
 		DepositBalanceToConsume:       b.DepositBalanceToConsume,
 		ExitBalanceToConsume:          b.ExitBalanceToConsume,
 		EarliestExitEpoch:             b.EarliestExitEpoch,
-		ConsolidationBalanceToConsume: b.ConsolidationBalanceToConsume,
-		EarliestConsolidationEpoch:    b.EarliestConsolidationEpoch,
 		PendingDeposits:               b.PendingDeposits,
 		PendingPartialWithdrawals:     b.PendingPartialWithdrawals,
-		PendingConsolidations:         b.PendingConsolidations,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

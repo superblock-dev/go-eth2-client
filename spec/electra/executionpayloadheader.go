@@ -43,7 +43,6 @@ type ExecutionPayloadHeader struct {
 	ExcessBlobGas             uint64
 	DepositRequestsRoot       phase0.Root `ssz-size:"32"`
 	WithdrawalRequestsRoot    phase0.Root `ssz-size:"32"`
-	ConsolidationRequestsRoot phase0.Root `ssz-size:"32"`
 }
 
 // String returns a string version of the structure.

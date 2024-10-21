@@ -48,7 +48,6 @@ type executionPayloadHeaderJSON struct {
 	ExcessBlobGas             string                     `json:"excess_blob_gas"`
 	DepositRequestsRoot       phase0.Root                `json:"deposit_requests_root"`
 	WithdrawalRequestsRoot    phase0.Root                `json:"withdrawal_requests_root"`
-	ConsolidationRequestsRoot phase0.Root                `json:"consolidation_requests_root"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -78,7 +77,6 @@ func (e *ExecutionPayloadHeader) MarshalJSON() ([]byte, error) {
 		ExcessBlobGas:             strconv.FormatUint(e.ExcessBlobGas, 10),
 		DepositRequestsRoot:       e.DepositRequestsRoot,
 		WithdrawalRequestsRoot:    e.WithdrawalRequestsRoot,
-		ConsolidationRequestsRoot: e.ConsolidationRequestsRoot,
 	})
 }
 
@@ -228,10 +226,6 @@ func (e *ExecutionPayloadHeader) UnmarshalJSON(input []byte) error {
 
 	if err := e.WithdrawalRequestsRoot.UnmarshalJSON(raw["withdrawal_requests_root"]); err != nil {
 		return errors.Wrap(err, "withdrawal_requests_root")
-	}
-
-	if err := e.ConsolidationRequestsRoot.UnmarshalJSON(raw["consolidation_requests_root"]); err != nil {
-		return errors.Wrap(err, "consolidation_requests_root")
 	}
 
 	return nil
