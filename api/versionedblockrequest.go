@@ -15,7 +15,6 @@ package api
 
 import (
 	"github.com/attestantio/go-eth2-client/spec"
-	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/bellatrix"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
@@ -439,46 +438,6 @@ func (v *VersionedBlockRequest) ProposerSlashings() ([]*phase0.ProposerSlashing,
 		}
 
 		return v.Electra.Message.Body.ProposerSlashings, nil
-	default:
-		return nil, ErrUnsupportedVersion
-	}
-}
-
-// SyncAggregate returns the sync aggregate of the beacon block.
-func (v *VersionedBlockRequest) SyncAggregate() (*altair.SyncAggregate, error) {
-	switch v.Version {
-	case spec.DataVersionBellatrix:
-		if v.Bellatrix == nil ||
-			v.Bellatrix.Message == nil ||
-			v.Bellatrix.Message.Body == nil {
-			return nil, ErrDataMissing
-		}
-
-		return v.Bellatrix.Message.Body.SyncAggregate, nil
-	case spec.DataVersionCapella:
-		if v.Capella == nil ||
-			v.Capella.Message == nil ||
-			v.Capella.Message.Body == nil {
-			return nil, ErrDataMissing
-		}
-
-		return v.Capella.Message.Body.SyncAggregate, nil
-	case spec.DataVersionDeneb:
-		if v.Deneb == nil ||
-			v.Deneb.Message == nil ||
-			v.Deneb.Message.Body == nil {
-			return nil, ErrDataMissing
-		}
-
-		return v.Deneb.Message.Body.SyncAggregate, nil
-	case spec.DataVersionElectra:
-		if v.Electra == nil ||
-			v.Electra.Message == nil ||
-			v.Electra.Message.Body == nil {
-			return nil, ErrDataMissing
-		}
-
-		return v.Electra.Message.Body.SyncAggregate, nil
 	default:
 		return nil, ErrUnsupportedVersion
 	}
