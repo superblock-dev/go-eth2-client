@@ -879,46 +879,6 @@ func (v *VersionedSignedBeaconBlock) ProposerSlashings() ([]*phase0.ProposerSlas
 	}
 }
 
-// SyncAggregate returns the sync aggregate of the beacon block.
-func (v *VersionedSignedBeaconBlock) SyncAggregate() (*altair.SyncAggregate, error) {
-	switch v.Version {
-	case DataVersionPhase0:
-		return nil, errors.New("phase0 block does not have sync aggregate")
-	case DataVersionAltair:
-		if v.Altair == nil || v.Altair.Message == nil || v.Altair.Message.Body == nil {
-			return nil, errors.New("no altair block")
-		}
-
-		return v.Altair.Message.Body.SyncAggregate, nil
-	case DataVersionBellatrix:
-		if v.Bellatrix == nil || v.Bellatrix.Message == nil || v.Bellatrix.Message.Body == nil {
-			return nil, errors.New("no bellatrix block")
-		}
-
-		return v.Bellatrix.Message.Body.SyncAggregate, nil
-	case DataVersionCapella:
-		if v.Capella == nil || v.Capella.Message == nil || v.Capella.Message.Body == nil {
-			return nil, errors.New("no capella block")
-		}
-
-		return v.Capella.Message.Body.SyncAggregate, nil
-	case DataVersionDeneb:
-		if v.Deneb == nil || v.Deneb.Message == nil || v.Deneb.Message.Body == nil {
-			return nil, errors.New("no deneb block")
-		}
-
-		return v.Deneb.Message.Body.SyncAggregate, nil
-	case DataVersionElectra:
-		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
-			return nil, errors.New("no electra block")
-		}
-
-		return v.Electra.Message.Body.SyncAggregate, nil
-	default:
-		return nil, errors.New("unknown version")
-	}
-}
-
 // BLSToExecutionChanges returns the bls to execution changes of the beacon block.
 func (v *VersionedSignedBeaconBlock) BLSToExecutionChanges() ([]*capella.SignedBLSToExecutionChange, error) {
 	switch v.Version {

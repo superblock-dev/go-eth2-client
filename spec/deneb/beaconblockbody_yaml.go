@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
@@ -35,7 +34,6 @@ type beaconBlockBodyYAML struct {
 	Attestations          []*phase0.Attestation                 `yaml:"attestations"`
 	Deposits              []*phase0.Deposit                     `yaml:"deposits"`
 	VoluntaryExits        []*phase0.SignedVoluntaryExit         `yaml:"voluntary_exits"`
-	SyncAggregate         *altair.SyncAggregate                 `yaml:"sync_aggregate"`
 	ExecutionPayload      *ExecutionPayload                     `yaml:"execution_payload"`
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
 	BlobKZGCommitments    []string                              `yaml:"blob_kzg_commitments"`
@@ -57,7 +55,6 @@ func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 		Attestations:          b.Attestations,
 		Deposits:              b.Deposits,
 		VoluntaryExits:        b.VoluntaryExits,
-		SyncAggregate:         b.SyncAggregate,
 		ExecutionPayload:      b.ExecutionPayload,
 		BLSToExecutionChanges: b.BLSToExecutionChanges,
 		BlobKZGCommitments:    blobKZGCommitments,

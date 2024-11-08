@@ -34,17 +34,14 @@ type beaconStateYAML struct {
 	LatestBlockHeader            *phase0.BeaconBlockHeader    `yaml:"latest_block_header"`
 	BlockRoots                   []phase0.Root                `yaml:"block_roots"`
 	StateRoots                   []phase0.Root                `yaml:"state_roots"`
-	HistoricalRoots              []phase0.Root                `yaml:"historical_roots"`
 	RewardAdjustmentFactor       uint64                       `yaml:"reward_adjustment_factor"`
 	ETH1Data                     *phase0.ETH1Data             `yaml:"eth1_data"`
 	ETH1DataVotes                []*phase0.ETH1Data           `yaml:"eth1_data_votes"`
 	ETH1DepositIndex             uint64                       `yaml:"eth1_deposit_index"`
 	Validators                   []*phase0.Validator          `yaml:"validators"`
 	Balances                     []phase0.Gwei                `yaml:"balances"`
-	PreviousEpochReserve         uint64                       `yaml:"previous_epoch_reserve"`
-	CurrentEpochReserve          uint64                       `yaml:"current_epoch_reserve"`
+	Reserves                     uint64                       `yaml:"reserves"`
 	RANDAOMixes                  []phase0.Root                `yaml:"randao_mixes"`
-	Slashings                    []phase0.Gwei                `yaml:"slashings"`
 	PreviousEpochParticipation   []altair.ParticipationFlags  `yaml:"previous_epoch_participation"`
 	CurrentEpochParticipation    []altair.ParticipationFlags  `yaml:"current_epoch_participation"`
 	JustificationBits            string                       `yaml:"justification_bits"`
@@ -52,8 +49,6 @@ type beaconStateYAML struct {
 	CurrentJustifiedCheckpoint   *phase0.Checkpoint           `yaml:"current_justified_checkpoint"`
 	FinalizedCheckpoint          *phase0.Checkpoint           `yaml:"finalized_checkpoint"`
 	InactivityScores             []uint64                     `yaml:"inactivity_scores"`
-	CurrentSyncCommittee         *altair.SyncCommittee        `yaml:"current_sync_committee"`
-	NextSyncCommittee            *altair.SyncCommittee        `yaml:"next_sync_committee"`
 	LatestExecutionPayloadHeader *ExecutionPayloadHeader      `yaml:"latest_execution_payload_header"`
 	NextWithdrawalIndex          capella.WithdrawalIndex      `yaml:"next_withdrawal_index"`
 	NextWithdrawalValidatorIndex phase0.ValidatorIndex        `yaml:"next_withdrawal_validator_index"`
@@ -70,17 +65,14 @@ func (b *BeaconState) MarshalYAML() ([]byte, error) {
 		LatestBlockHeader:            b.LatestBlockHeader,
 		BlockRoots:                   b.BlockRoots,
 		StateRoots:                   b.StateRoots,
-		HistoricalRoots:              b.HistoricalRoots,
 		RewardAdjustmentFactor:       b.RewardAdjustmentFactor,
 		ETH1Data:                     b.ETH1Data,
 		ETH1DataVotes:                b.ETH1DataVotes,
 		ETH1DepositIndex:             b.ETH1DepositIndex,
 		Validators:                   b.Validators,
 		Balances:                     b.Balances,
-		PreviousEpochReserve:         b.PreviousEpochReserve,
-		CurrentEpochReserve:          b.CurrentEpochReserve,
+		Reserves:                     b.Reserves,
 		RANDAOMixes:                  b.RANDAOMixes,
-		Slashings:                    b.Slashings,
 		PreviousEpochParticipation:   b.PreviousEpochParticipation,
 		CurrentEpochParticipation:    b.CurrentEpochParticipation,
 		JustificationBits:            fmt.Sprintf("%#x", b.JustificationBits.Bytes()),
@@ -88,8 +80,6 @@ func (b *BeaconState) MarshalYAML() ([]byte, error) {
 		CurrentJustifiedCheckpoint:   b.CurrentJustifiedCheckpoint,
 		FinalizedCheckpoint:          b.FinalizedCheckpoint,
 		InactivityScores:             b.InactivityScores,
-		CurrentSyncCommittee:         b.CurrentSyncCommittee,
-		NextSyncCommittee:            b.NextSyncCommittee,
 		LatestExecutionPayloadHeader: b.LatestExecutionPayloadHeader,
 		NextWithdrawalIndex:          b.NextWithdrawalIndex,
 		NextWithdrawalValidatorIndex: b.NextWithdrawalValidatorIndex,
