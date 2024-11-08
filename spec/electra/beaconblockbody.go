@@ -16,7 +16,6 @@ package electra
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -33,7 +32,6 @@ type BeaconBlockBody struct {
 	Attestations          []*Attestation                `ssz-max:"8"`
 	Deposits              []*phase0.Deposit             `ssz-max:"16"`
 	VoluntaryExits        []*phase0.SignedVoluntaryExit `ssz-max:"16"`
-	SyncAggregate         *altair.SyncAggregate
 	ExecutionPayload      *deneb.ExecutionPayload
 	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
 	BlobKZGCommitments    []deneb.KZGCommitment                 `ssz-max:"4096" ssz-size:"?,48"`

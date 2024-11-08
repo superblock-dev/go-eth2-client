@@ -23,15 +23,15 @@ import (
 
 // executionRequestsJSON is the spec representation of the struct.
 type executionRequestsJSON struct {
-	Deposits       []*DepositRequest       `json:"deposits"`
-	Withdrawals    []*WithdrawalRequest    `json:"withdrawals"`
+	Deposits    []*DepositRequest    `json:"deposits"`
+	Withdrawals []*WithdrawalRequest `json:"withdrawals"`
 }
 
 // MarshalJSON implements json.Marshaler.
 func (e *ExecutionRequests) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&executionRequestsJSON{
-		Deposits:       e.Deposits,
-		Withdrawals:    e.Withdrawals,
+		Deposits:    e.Deposits,
+		Withdrawals: e.Withdrawals,
 	})
 }
 
