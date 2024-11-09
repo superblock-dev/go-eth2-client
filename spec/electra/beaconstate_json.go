@@ -163,10 +163,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "state_roots")
 	}
 
-	if err := json.Unmarshal(raw["historical_roots"], &b.HistoricalRoots); err != nil {
-		return errors.Wrap(err, "historical_roots")
-	}
-
 	rewardAdjustmentFactor := string(bytes.Trim(raw["reward_adjustment_factor"], `"`))
 	if b.RewardAdjustmentFactor, err = strconv.ParseUint(rewardAdjustmentFactor, 10, 64); err != nil {
 		return errors.Wrap(err, "reward_adjustment_factor")
