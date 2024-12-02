@@ -28,63 +28,59 @@ import (
 
 // BeaconBlockBody represents the body of a beacon block.
 type BeaconBlockBody struct {
-	RANDAOReveal          phase0.BLSSignature `ssz-size:"96"`
-	ETH1Data              *phase0.ETH1Data
-	Graffiti              [32]byte                      `ssz-size:"32"`
-	ProposerSlashings     []*phase0.ProposerSlashing    `ssz-max:"16"`
-	AttesterSlashings     []*phase0.AttesterSlashing    `ssz-max:"2"`
-	Attestations          []*phase0.Attestation         `ssz-max:"128"`
-	Deposits              []*phase0.Deposit             `ssz-max:"16"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit `ssz-max:"16"`
-	SyncAggregate         *altair.SyncAggregate
-	ExecutionPayload      *ExecutionPayload
-	BLSToExecutionChanges []*SignedBLSToExecutionChange `ssz-max:"16"`
+	RANDAOReveal      phase0.BLSSignature `ssz-size:"96"`
+	ETH1Data          *phase0.ETH1Data
+	Graffiti          [32]byte                      `ssz-size:"32"`
+	ProposerSlashings []*phase0.ProposerSlashing    `ssz-max:"16"`
+	AttesterSlashings []*phase0.AttesterSlashing    `ssz-max:"2"`
+	Attestations      []*phase0.Attestation         `ssz-max:"128"`
+	Deposits          []*phase0.Deposit             `ssz-max:"16"`
+	VoluntaryExits    []*phase0.SignedVoluntaryExit `ssz-max:"16"`
+	SyncAggregate     *altair.SyncAggregate
+	ExecutionPayload  *ExecutionPayload
 }
 
 // beaconBlockBodyJSON is the spec representation of the struct.
 type beaconBlockBodyJSON struct {
-	RANDAOReveal          string                        `json:"randao_reveal"`
-	ETH1Data              *phase0.ETH1Data              `json:"eth1_data"`
-	Graffiti              string                        `json:"graffiti"`
-	ProposerSlashings     []*phase0.ProposerSlashing    `json:"proposer_slashings"`
-	AttesterSlashings     []*phase0.AttesterSlashing    `json:"attester_slashings"`
-	Attestations          []*phase0.Attestation         `json:"attestations"`
-	Deposits              []*phase0.Deposit             `json:"deposits"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
-	SyncAggregate         *altair.SyncAggregate         `json:"sync_aggregate"`
-	ExecutionPayload      *ExecutionPayload             `json:"execution_payload"`
-	BLSToExecutionChanges []*SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
+	RANDAOReveal      string                        `json:"randao_reveal"`
+	ETH1Data          *phase0.ETH1Data              `json:"eth1_data"`
+	Graffiti          string                        `json:"graffiti"`
+	ProposerSlashings []*phase0.ProposerSlashing    `json:"proposer_slashings"`
+	AttesterSlashings []*phase0.AttesterSlashing    `json:"attester_slashings"`
+	Attestations      []*phase0.Attestation         `json:"attestations"`
+	Deposits          []*phase0.Deposit             `json:"deposits"`
+	VoluntaryExits    []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
+	SyncAggregate     *altair.SyncAggregate         `json:"sync_aggregate"`
+	ExecutionPayload  *ExecutionPayload             `json:"execution_payload"`
 }
 
 // beaconBlockBodyYAML is the spec representation of the struct.
 type beaconBlockBodyYAML struct {
-	RANDAOReveal          string                        `yaml:"randao_reveal"`
-	ETH1Data              *phase0.ETH1Data              `yaml:"eth1_data"`
-	Graffiti              string                        `yaml:"graffiti"`
-	ProposerSlashings     []*phase0.ProposerSlashing    `yaml:"proposer_slashings"`
-	AttesterSlashings     []*phase0.AttesterSlashing    `yaml:"attester_slashings"`
-	Attestations          []*phase0.Attestation         `yaml:"attestations"`
-	Deposits              []*phase0.Deposit             `yaml:"deposits"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
-	SyncAggregate         *altair.SyncAggregate         `yaml:"sync_aggregate"`
-	ExecutionPayload      *ExecutionPayload             `yaml:"execution_payload"`
-	BLSToExecutionChanges []*SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
+	RANDAOReveal      string                        `yaml:"randao_reveal"`
+	ETH1Data          *phase0.ETH1Data              `yaml:"eth1_data"`
+	Graffiti          string                        `yaml:"graffiti"`
+	ProposerSlashings []*phase0.ProposerSlashing    `yaml:"proposer_slashings"`
+	AttesterSlashings []*phase0.AttesterSlashing    `yaml:"attester_slashings"`
+	Attestations      []*phase0.Attestation         `yaml:"attestations"`
+	Deposits          []*phase0.Deposit             `yaml:"deposits"`
+	VoluntaryExits    []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
+	SyncAggregate     *altair.SyncAggregate         `yaml:"sync_aggregate"`
+	ExecutionPayload  *ExecutionPayload             `yaml:"execution_payload"`
 }
 
 // MarshalJSON implements json.Marshaler.
 func (b *BeaconBlockBody) MarshalJSON() ([]byte, error) {
 	return json.Marshal(&beaconBlockBodyJSON{
-		RANDAOReveal:          fmt.Sprintf("%#x", b.RANDAOReveal),
-		ETH1Data:              b.ETH1Data,
-		Graffiti:              fmt.Sprintf("%#x", b.Graffiti),
-		ProposerSlashings:     b.ProposerSlashings,
-		AttesterSlashings:     b.AttesterSlashings,
-		Attestations:          b.Attestations,
-		Deposits:              b.Deposits,
-		VoluntaryExits:        b.VoluntaryExits,
-		SyncAggregate:         b.SyncAggregate,
-		ExecutionPayload:      b.ExecutionPayload,
-		BLSToExecutionChanges: b.BLSToExecutionChanges,
+		RANDAOReveal:      fmt.Sprintf("%#x", b.RANDAOReveal),
+		ETH1Data:          b.ETH1Data,
+		Graffiti:          fmt.Sprintf("%#x", b.Graffiti),
+		ProposerSlashings: b.ProposerSlashings,
+		AttesterSlashings: b.AttesterSlashings,
+		Attestations:      b.Attestations,
+		Deposits:          b.Deposits,
+		VoluntaryExits:    b.VoluntaryExits,
+		SyncAggregate:     b.SyncAggregate,
+		ExecutionPayload:  b.ExecutionPayload,
 	})
 }
 
@@ -178,7 +174,6 @@ func (b *BeaconBlockBody) unpack(data *beaconBlockBodyJSON) error {
 		return errors.New("execution payload missing")
 	}
 	b.ExecutionPayload = data.ExecutionPayload
-	b.BLSToExecutionChanges = data.BLSToExecutionChanges
 
 	return nil
 }
@@ -186,17 +181,16 @@ func (b *BeaconBlockBody) unpack(data *beaconBlockBodyJSON) error {
 // MarshalYAML implements yaml.Marshaler.
 func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconBlockBodyYAML{
-		RANDAOReveal:          fmt.Sprintf("%#x", b.RANDAOReveal),
-		ETH1Data:              b.ETH1Data,
-		Graffiti:              fmt.Sprintf("%#x", b.Graffiti),
-		ProposerSlashings:     b.ProposerSlashings,
-		AttesterSlashings:     b.AttesterSlashings,
-		Attestations:          b.Attestations,
-		Deposits:              b.Deposits,
-		VoluntaryExits:        b.VoluntaryExits,
-		SyncAggregate:         b.SyncAggregate,
-		ExecutionPayload:      b.ExecutionPayload,
-		BLSToExecutionChanges: b.BLSToExecutionChanges,
+		RANDAOReveal:      fmt.Sprintf("%#x", b.RANDAOReveal),
+		ETH1Data:          b.ETH1Data,
+		Graffiti:          fmt.Sprintf("%#x", b.Graffiti),
+		ProposerSlashings: b.ProposerSlashings,
+		AttesterSlashings: b.AttesterSlashings,
+		Attestations:      b.Attestations,
+		Deposits:          b.Deposits,
+		VoluntaryExits:    b.VoluntaryExits,
+		SyncAggregate:     b.SyncAggregate,
+		ExecutionPayload:  b.ExecutionPayload,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

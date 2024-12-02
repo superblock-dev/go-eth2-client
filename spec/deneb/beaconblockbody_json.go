@@ -20,24 +20,22 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/codecs"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
 )
 
 // beaconBlockBodyJSON is the spec representation of the struct.
 type beaconBlockBodyJSON struct {
-	RANDAOReveal          phase0.BLSSignature                   `json:"randao_reveal"`
-	ETH1Data              *phase0.ETH1Data                      `json:"eth1_data"`
-	Graffiti              string                                `json:"graffiti"`
-	ProposerSlashings     []*phase0.ProposerSlashing            `json:"proposer_slashings"`
-	AttesterSlashings     []*phase0.AttesterSlashing            `json:"attester_slashings"`
-	Attestations          []*phase0.Attestation                 `json:"attestations"`
-	Deposits              []*phase0.Deposit                     `json:"deposits"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit         `json:"voluntary_exits"`
-	ExecutionPayload      *ExecutionPayload                     `json:"execution_payload"`
-	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
-	BlobKZGCommitments    []string                              `json:"blob_kzg_commitments"`
+	RANDAOReveal       phase0.BLSSignature           `json:"randao_reveal"`
+	ETH1Data           *phase0.ETH1Data              `json:"eth1_data"`
+	Graffiti           string                        `json:"graffiti"`
+	ProposerSlashings  []*phase0.ProposerSlashing    `json:"proposer_slashings"`
+	AttesterSlashings  []*phase0.AttesterSlashing    `json:"attester_slashings"`
+	Attestations       []*phase0.Attestation         `json:"attestations"`
+	Deposits           []*phase0.Deposit             `json:"deposits"`
+	VoluntaryExits     []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
+	ExecutionPayload   *ExecutionPayload             `json:"execution_payload"`
+	BlobKZGCommitments []string                      `json:"blob_kzg_commitments"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -48,17 +46,16 @@ func (b *BeaconBlockBody) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(&beaconBlockBodyJSON{
-		RANDAOReveal:          b.RANDAOReveal,
-		ETH1Data:              b.ETH1Data,
-		Graffiti:              fmt.Sprintf("%#x", b.Graffiti),
-		ProposerSlashings:     b.ProposerSlashings,
-		AttesterSlashings:     b.AttesterSlashings,
-		Attestations:          b.Attestations,
-		Deposits:              b.Deposits,
-		VoluntaryExits:        b.VoluntaryExits,
-		ExecutionPayload:      b.ExecutionPayload,
-		BLSToExecutionChanges: b.BLSToExecutionChanges,
-		BlobKZGCommitments:    blobKZGCommitments,
+		RANDAOReveal:       b.RANDAOReveal,
+		ETH1Data:           b.ETH1Data,
+		Graffiti:           fmt.Sprintf("%#x", b.Graffiti),
+		ProposerSlashings:  b.ProposerSlashings,
+		AttesterSlashings:  b.AttesterSlashings,
+		Attestations:       b.Attestations,
+		Deposits:           b.Deposits,
+		VoluntaryExits:     b.VoluntaryExits,
+		ExecutionPayload:   b.ExecutionPayload,
+		BlobKZGCommitments: blobKZGCommitments,
 	})
 }
 
@@ -142,15 +139,6 @@ func (b *BeaconBlockBody) UnmarshalJSON(input []byte) error {
 
 	if err := json.Unmarshal(raw["execution_payload"], &b.ExecutionPayload); err != nil {
 		return errors.Wrap(err, "execution_payload")
-	}
-
-	if err := json.Unmarshal(raw["bls_to_execution_changes"], &b.BLSToExecutionChanges); err != nil {
-		return errors.Wrap(err, "bls_to_execution_changes")
-	}
-	for i := range b.BLSToExecutionChanges {
-		if b.BLSToExecutionChanges[i] == nil {
-			return fmt.Errorf("bls to execution changes entry %d missing", i)
-		}
 	}
 
 	if err := json.Unmarshal(raw["blob_kzg_commitments"], &b.BlobKZGCommitments); err != nil {

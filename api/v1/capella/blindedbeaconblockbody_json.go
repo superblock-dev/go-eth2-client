@@ -27,17 +27,16 @@ import (
 
 // blindedBeaconBlockBodyJSON is the spec representation of the struct.
 type blindedBeaconBlockBodyJSON struct {
-	RANDAOReveal           string                                `json:"randao_reveal"`
-	ETH1Data               *phase0.ETH1Data                      `json:"eth1_data"`
-	Graffiti               string                                `json:"graffiti"`
-	ProposerSlashings      []*phase0.ProposerSlashing            `json:"proposer_slashings"`
-	AttesterSlashings      []*phase0.AttesterSlashing            `json:"attester_slashings"`
-	Attestations           []*phase0.Attestation                 `json:"attestations"`
-	Deposits               []*phase0.Deposit                     `json:"deposits"`
-	VoluntaryExits         []*phase0.SignedVoluntaryExit         `json:"voluntary_exits"`
-	SyncAggregate          *altair.SyncAggregate                 `json:"sync_aggregate"`
-	ExecutionPayloadHeader *capella.ExecutionPayloadHeader       `json:"execution_payload_header"`
-	BLSToExecutionChanges  []*capella.SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
+	RANDAOReveal           string                          `json:"randao_reveal"`
+	ETH1Data               *phase0.ETH1Data                `json:"eth1_data"`
+	Graffiti               string                          `json:"graffiti"`
+	ProposerSlashings      []*phase0.ProposerSlashing      `json:"proposer_slashings"`
+	AttesterSlashings      []*phase0.AttesterSlashing      `json:"attester_slashings"`
+	Attestations           []*phase0.Attestation           `json:"attestations"`
+	Deposits               []*phase0.Deposit               `json:"deposits"`
+	VoluntaryExits         []*phase0.SignedVoluntaryExit   `json:"voluntary_exits"`
+	SyncAggregate          *altair.SyncAggregate           `json:"sync_aggregate"`
+	ExecutionPayloadHeader *capella.ExecutionPayloadHeader `json:"execution_payload_header"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -53,7 +52,6 @@ func (b *BlindedBeaconBlockBody) MarshalJSON() ([]byte, error) {
 		VoluntaryExits:         b.VoluntaryExits,
 		SyncAggregate:          b.SyncAggregate,
 		ExecutionPayloadHeader: b.ExecutionPayloadHeader,
-		BLSToExecutionChanges:  b.BLSToExecutionChanges,
 	})
 }
 
@@ -147,16 +145,6 @@ func (b *BlindedBeaconBlockBody) unpack(data *blindedBeaconBlockBodyJSON) error 
 		return errors.New("execution payload header missing")
 	}
 	b.ExecutionPayloadHeader = data.ExecutionPayloadHeader
-	if data.BLSToExecutionChanges == nil {
-		b.BLSToExecutionChanges = make([]*capella.SignedBLSToExecutionChange, 0)
-	} else {
-		for i := range data.BLSToExecutionChanges {
-			if data.BLSToExecutionChanges[i] == nil {
-				return fmt.Errorf("bls to execution changes entry %d missing", i)
-			}
-		}
-		b.BLSToExecutionChanges = data.BLSToExecutionChanges
-	}
 
 	return nil
 }

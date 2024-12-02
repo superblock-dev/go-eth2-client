@@ -16,24 +16,22 @@ package deneb
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
 )
 
 // BeaconBlockBody represents the body of a beacon block.
 type BeaconBlockBody struct {
-	RANDAOReveal          phase0.BLSSignature `ssz-size:"96"`
-	ETH1Data              *phase0.ETH1Data
-	Graffiti              [32]byte                      `ssz-size:"32"`
-	ProposerSlashings     []*phase0.ProposerSlashing    `ssz-max:"16"`
-	AttesterSlashings     []*phase0.AttesterSlashing    `ssz-max:"2"`
-	Attestations          []*phase0.Attestation         `ssz-max:"128"`
-	Deposits              []*phase0.Deposit             `ssz-max:"16"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit `ssz-max:"16"`
-	ExecutionPayload      *ExecutionPayload
-	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
-	BlobKZGCommitments    []KZGCommitment                       `ssz-max:"4096" ssz-size:"?,48"`
+	RANDAOReveal       phase0.BLSSignature `ssz-size:"96"`
+	ETH1Data           *phase0.ETH1Data
+	Graffiti           [32]byte                      `ssz-size:"32"`
+	ProposerSlashings  []*phase0.ProposerSlashing    `ssz-max:"16"`
+	AttesterSlashings  []*phase0.AttesterSlashing    `ssz-max:"2"`
+	Attestations       []*phase0.Attestation         `ssz-max:"128"`
+	Deposits           []*phase0.Deposit             `ssz-max:"16"`
+	VoluntaryExits     []*phase0.SignedVoluntaryExit `ssz-max:"16"`
+	ExecutionPayload   *ExecutionPayload
+	BlobKZGCommitments []KZGCommitment `ssz-max:"4096" ssz-size:"?,48"`
 }
 
 // String returns a string version of the structure.

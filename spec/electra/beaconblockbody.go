@@ -16,7 +16,6 @@ package electra
 import (
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
@@ -24,18 +23,17 @@ import (
 
 // BeaconBlockBody represents the body of a beacon block.
 type BeaconBlockBody struct {
-	RANDAOReveal          phase0.BLSSignature `ssz-size:"96"`
-	ETH1Data              *phase0.ETH1Data
-	Graffiti              [32]byte                      `ssz-size:"32"`
-	ProposerSlashings     []*phase0.ProposerSlashing    `ssz-max:"16"`
-	AttesterSlashings     []*AttesterSlashing           `ssz-max:"1"`
-	Attestations          []*Attestation                `ssz-max:"8"`
-	Deposits              []*phase0.Deposit             `ssz-max:"16"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit `ssz-max:"16"`
-	ExecutionPayload      *deneb.ExecutionPayload
-	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
-	BlobKZGCommitments    []deneb.KZGCommitment                 `ssz-max:"4096" ssz-size:"?,48"`
-	ExecutionRequests     *ExecutionRequests
+	RANDAOReveal       phase0.BLSSignature `ssz-size:"96"`
+	ETH1Data           *phase0.ETH1Data
+	Graffiti           [32]byte                      `ssz-size:"32"`
+	ProposerSlashings  []*phase0.ProposerSlashing    `ssz-max:"16"`
+	AttesterSlashings  []*AttesterSlashing           `ssz-max:"1"`
+	Attestations       []*Attestation                `ssz-max:"8"`
+	Deposits           []*phase0.Deposit             `ssz-max:"16"`
+	VoluntaryExits     []*phase0.SignedVoluntaryExit `ssz-max:"16"`
+	ExecutionPayload   *deneb.ExecutionPayload
+	BlobKZGCommitments []deneb.KZGCommitment `ssz-max:"4096" ssz-size:"?,48"`
+	ExecutionRequests  *ExecutionRequests
 }
 
 // String returns a string version of the structure.

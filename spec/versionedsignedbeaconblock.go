@@ -879,38 +879,6 @@ func (v *VersionedSignedBeaconBlock) ProposerSlashings() ([]*phase0.ProposerSlas
 	}
 }
 
-// BLSToExecutionChanges returns the bls to execution changes of the beacon block.
-func (v *VersionedSignedBeaconBlock) BLSToExecutionChanges() ([]*capella.SignedBLSToExecutionChange, error) {
-	switch v.Version {
-	case DataVersionPhase0:
-		return nil, errors.New("phase0 block does not have bls to execution changes")
-	case DataVersionAltair:
-		return nil, errors.New("altair block does not have bls to execution changes")
-	case DataVersionBellatrix:
-		return nil, errors.New("bellatrix block does not have bls to execution changes")
-	case DataVersionCapella:
-		if v.Capella == nil || v.Capella.Message == nil || v.Capella.Message.Body == nil {
-			return nil, errors.New("no capella block")
-		}
-
-		return v.Capella.Message.Body.BLSToExecutionChanges, nil
-	case DataVersionDeneb:
-		if v.Deneb == nil || v.Deneb.Message == nil || v.Deneb.Message.Body == nil {
-			return nil, errors.New("no deneb block")
-		}
-
-		return v.Deneb.Message.Body.BLSToExecutionChanges, nil
-	case DataVersionElectra:
-		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
-			return nil, errors.New("no electra block")
-		}
-
-		return v.Electra.Message.Body.BLSToExecutionChanges, nil
-	default:
-		return nil, errors.New("unknown version")
-	}
-}
-
 // Withdrawals returns the withdrawals of the beacon block.
 func (v *VersionedSignedBeaconBlock) Withdrawals() ([]*capella.Withdrawal, error) {
 	switch v.Version {

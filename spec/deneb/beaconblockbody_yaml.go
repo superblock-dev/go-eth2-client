@@ -18,7 +18,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
 	"github.com/pkg/errors"
@@ -26,17 +25,16 @@ import (
 
 // beaconBlockBodyYAML is the spec representation of the struct.
 type beaconBlockBodyYAML struct {
-	RANDAOReveal          string                                `yaml:"randao_reveal"`
-	ETH1Data              *phase0.ETH1Data                      `yaml:"eth1_data"`
-	Graffiti              string                                `yaml:"graffiti"`
-	ProposerSlashings     []*phase0.ProposerSlashing            `yaml:"proposer_slashings"`
-	AttesterSlashings     []*phase0.AttesterSlashing            `yaml:"attester_slashings"`
-	Attestations          []*phase0.Attestation                 `yaml:"attestations"`
-	Deposits              []*phase0.Deposit                     `yaml:"deposits"`
-	VoluntaryExits        []*phase0.SignedVoluntaryExit         `yaml:"voluntary_exits"`
-	ExecutionPayload      *ExecutionPayload                     `yaml:"execution_payload"`
-	BLSToExecutionChanges []*capella.SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
-	BlobKZGCommitments    []string                              `yaml:"blob_kzg_commitments"`
+	RANDAOReveal       string                        `yaml:"randao_reveal"`
+	ETH1Data           *phase0.ETH1Data              `yaml:"eth1_data"`
+	Graffiti           string                        `yaml:"graffiti"`
+	ProposerSlashings  []*phase0.ProposerSlashing    `yaml:"proposer_slashings"`
+	AttesterSlashings  []*phase0.AttesterSlashing    `yaml:"attester_slashings"`
+	Attestations       []*phase0.Attestation         `yaml:"attestations"`
+	Deposits           []*phase0.Deposit             `yaml:"deposits"`
+	VoluntaryExits     []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
+	ExecutionPayload   *ExecutionPayload             `yaml:"execution_payload"`
+	BlobKZGCommitments []string                      `yaml:"blob_kzg_commitments"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -47,17 +45,16 @@ func (b *BeaconBlockBody) MarshalYAML() ([]byte, error) {
 	}
 
 	yamlBytes, err := yaml.MarshalWithOptions(&beaconBlockBodyYAML{
-		RANDAOReveal:          b.RANDAOReveal.String(),
-		ETH1Data:              b.ETH1Data,
-		Graffiti:              fmt.Sprintf("%#x", b.Graffiti),
-		ProposerSlashings:     b.ProposerSlashings,
-		AttesterSlashings:     b.AttesterSlashings,
-		Attestations:          b.Attestations,
-		Deposits:              b.Deposits,
-		VoluntaryExits:        b.VoluntaryExits,
-		ExecutionPayload:      b.ExecutionPayload,
-		BLSToExecutionChanges: b.BLSToExecutionChanges,
-		BlobKZGCommitments:    blobKZGCommitments,
+		RANDAOReveal:       b.RANDAOReveal.String(),
+		ETH1Data:           b.ETH1Data,
+		Graffiti:           fmt.Sprintf("%#x", b.Graffiti),
+		ProposerSlashings:  b.ProposerSlashings,
+		AttesterSlashings:  b.AttesterSlashings,
+		Attestations:       b.Attestations,
+		Deposits:           b.Deposits,
+		VoluntaryExits:     b.VoluntaryExits,
+		ExecutionPayload:   b.ExecutionPayload,
+		BlobKZGCommitments: blobKZGCommitments,
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

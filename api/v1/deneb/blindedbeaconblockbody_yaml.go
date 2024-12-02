@@ -18,7 +18,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
@@ -26,18 +25,17 @@ import (
 
 // blindedBeaconBlockBodyYAML is the spec representation of the struct.
 type blindedBeaconBlockBodyYAML struct {
-	RANDAOReveal           string                                `yaml:"randao_reveal"`
-	ETH1Data               *phase0.ETH1Data                      `yaml:"eth1_data"`
-	Graffiti               string                                `yaml:"graffiti"`
-	ProposerSlashings      []*phase0.ProposerSlashing            `yaml:"proposer_slashings"`
-	AttesterSlashings      []*phase0.AttesterSlashing            `yaml:"attester_slashings"`
-	Attestations           []*phase0.Attestation                 `yaml:"attestations"`
-	Deposits               []*phase0.Deposit                     `yaml:"deposits"`
-	VoluntaryExits         []*phase0.SignedVoluntaryExit         `yaml:"voluntary_exits"`
-	SyncAggregate          *altair.SyncAggregate                 `yaml:"sync_aggregate"`
-	ExecutionPayloadHeader *deneb.ExecutionPayloadHeader         `yaml:"execution_payload_header"`
-	BLSToExecutionChanges  []*capella.SignedBLSToExecutionChange `yaml:"bls_to_execution_changes"`
-	BlobKZGCommitments     []string                              `yaml:"blob_kzg_commitments"`
+	RANDAOReveal           string                        `yaml:"randao_reveal"`
+	ETH1Data               *phase0.ETH1Data              `yaml:"eth1_data"`
+	Graffiti               string                        `yaml:"graffiti"`
+	ProposerSlashings      []*phase0.ProposerSlashing    `yaml:"proposer_slashings"`
+	AttesterSlashings      []*phase0.AttesterSlashing    `yaml:"attester_slashings"`
+	Attestations           []*phase0.Attestation         `yaml:"attestations"`
+	Deposits               []*phase0.Deposit             `yaml:"deposits"`
+	VoluntaryExits         []*phase0.SignedVoluntaryExit `yaml:"voluntary_exits"`
+	SyncAggregate          *altair.SyncAggregate         `yaml:"sync_aggregate"`
+	ExecutionPayloadHeader *deneb.ExecutionPayloadHeader `yaml:"execution_payload_header"`
+	BlobKZGCommitments     []string                      `yaml:"blob_kzg_commitments"`
 }
 
 // MarshalYAML implements yaml.Marshaler.
@@ -58,7 +56,6 @@ func (b *BlindedBeaconBlockBody) MarshalYAML() ([]byte, error) {
 		VoluntaryExits:         b.VoluntaryExits,
 		SyncAggregate:          b.SyncAggregate,
 		ExecutionPayloadHeader: b.ExecutionPayloadHeader,
-		BLSToExecutionChanges:  b.BLSToExecutionChanges,
 		BlobKZGCommitments:     blobKZGCommitments,
 	}, yaml.Flow(true))
 	if err != nil {

@@ -28,7 +28,6 @@ import (
 	consensusclient "github.com/attestantio/go-eth2-client"
 	api "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/r3labs/sse/v2"
 	"github.com/rs/zerolog"
@@ -158,15 +157,6 @@ func (*Service) handleEvent(ctx context.Context, msg *sse.Event, handler consens
 		err := json.Unmarshal(msg.Data, data)
 		if err != nil {
 			log.Error().Err(err).RawJSON("data", msg.Data).Msg("Failed to parse block gossip event")
-
-			return
-		}
-		event.Data = data
-	case "bls_to_execution_change":
-		data := &capella.SignedBLSToExecutionChange{}
-		err := json.Unmarshal(msg.Data, data)
-		if err != nil {
-			log.Error().Err(err).RawJSON("data", msg.Data).Msg("Failed to parse bls to execution change event")
 
 			return
 		}
