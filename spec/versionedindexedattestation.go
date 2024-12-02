@@ -69,7 +69,7 @@ func (v *VersionedIndexedAttestation) AttestingIndices() ([]uint64, error) {
 		}
 
 		return v.Deneb.AttestingIndices, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra indexed attestation")
 		}
@@ -113,7 +113,7 @@ func (v *VersionedIndexedAttestation) Data() (*phase0.AttestationData, error) {
 		}
 
 		return v.Deneb.Data, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra indexed attestation")
 		}
@@ -157,7 +157,7 @@ func (v *VersionedIndexedAttestation) Signature() (phase0.BLSSignature, error) {
 		}
 
 		return v.Deneb.Signature, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.BLSSignature{}, errors.New("no Electra indexed attestation")
 		}
@@ -201,7 +201,7 @@ func (v *VersionedIndexedAttestation) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return ""
 		}

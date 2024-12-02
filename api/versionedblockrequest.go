@@ -55,7 +55,7 @@ func (v *VersionedBlockRequest) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Message.Slot, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return 0, ErrDataMissing
@@ -97,7 +97,7 @@ func (v *VersionedBlockRequest) ExecutionBlockHash() (phase0.Hash32, error) {
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayload.BlockHash, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -162,7 +162,7 @@ func (v *VersionedBlockRequest) Attestations() ([]spec.VersionedAttestation, err
 		}
 
 		return versionedAttestations, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -172,7 +172,7 @@ func (v *VersionedBlockRequest) Attestations() ([]spec.VersionedAttestation, err
 		versionedAttestations := make([]spec.VersionedAttestation, len(v.Electra.Message.Body.Attestations))
 		for i, attestation := range v.Electra.Message.Body.Attestations {
 			versionedAttestations[i] = spec.VersionedAttestation{
-				Version: spec.DataVersionElectra,
+				Version: spec.DataVersionAlpaca,
 				Electra: attestation,
 			}
 		}
@@ -207,7 +207,7 @@ func (v *VersionedBlockRequest) Root() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.HashTreeRoot()
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return phase0.Root{}, ErrDataMissing
@@ -246,7 +246,7 @@ func (v *VersionedBlockRequest) BodyRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.Body.HashTreeRoot()
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -283,7 +283,7 @@ func (v *VersionedBlockRequest) ParentRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.ParentRoot, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return phase0.Root{}, ErrDataMissing
@@ -319,7 +319,7 @@ func (v *VersionedBlockRequest) StateRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.StateRoot, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return phase0.Root{}, ErrDataMissing
@@ -382,7 +382,7 @@ func (v *VersionedBlockRequest) AttesterSlashings() ([]spec.VersionedAttesterSla
 		}
 
 		return versionedAttesterSlashings, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -392,7 +392,7 @@ func (v *VersionedBlockRequest) AttesterSlashings() ([]spec.VersionedAttesterSla
 		versionedAttesterSlashings := make([]spec.VersionedAttesterSlashing, len(v.Electra.Message.Body.AttesterSlashings))
 		for i, attesterSlashing := range v.Electra.Message.Body.AttesterSlashings {
 			versionedAttesterSlashings[i] = spec.VersionedAttesterSlashing{
-				Version: spec.DataVersionElectra,
+				Version: spec.DataVersionAlpaca,
 				Electra: attesterSlashing,
 			}
 		}
@@ -430,7 +430,7 @@ func (v *VersionedBlockRequest) ProposerSlashings() ([]*phase0.ProposerSlashing,
 		}
 
 		return v.Deneb.Message.Body.ProposerSlashings, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -464,7 +464,7 @@ func (v *VersionedBlockRequest) String() string {
 		}
 
 		return v.Deneb.String()
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil {
 			return ""
 		}

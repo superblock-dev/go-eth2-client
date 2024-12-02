@@ -80,7 +80,7 @@ func (v *VersionedSignedProposal) AssertPresent() error {
 		if v.DenebBlinded == nil && v.Blinded {
 			return errors.New("blinded deneb proposal not present")
 		}
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Electra == nil && !v.Blinded {
 			return errors.New("electra proposal not present")
 		}
@@ -123,7 +123,7 @@ func (v *VersionedSignedProposal) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.SignedBlock.Message.Slot, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			return v.ElectraBlinded.Message.Slot, nil
 		}
@@ -163,7 +163,7 @@ func (v *VersionedSignedProposal) ProposerIndex() (phase0.ValidatorIndex, error)
 		}
 
 		return v.Deneb.SignedBlock.Message.ProposerIndex, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			return v.ElectraBlinded.Message.ProposerIndex, nil
 		}
@@ -199,7 +199,7 @@ func (v *VersionedSignedProposal) ExecutionBlockHash() (phase0.Hash32, error) {
 		}
 
 		return v.Deneb.SignedBlock.Message.Body.ExecutionPayload.BlockHash, nil
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			return v.ElectraBlinded.Message.Body.ExecutionPayloadHeader.BlockHash, nil
 		}
@@ -267,7 +267,7 @@ func (v *VersionedSignedProposal) String() string {
 		}
 
 		return v.Deneb.String()
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			if v.ElectraBlinded == nil {
 				return ""
@@ -327,7 +327,7 @@ func (v *VersionedSignedProposal) assertMessagePresent() error {
 				return ErrDataMissing
 			}
 		}
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			if v.ElectraBlinded == nil ||
 				v.ElectraBlinded.Message == nil {
@@ -402,7 +402,7 @@ func (v *VersionedSignedProposal) assertExecutionPayloadPresent() error {
 				return ErrDataMissing
 			}
 		}
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if v.Blinded {
 			if v.ElectraBlinded == nil ||
 				v.ElectraBlinded.Message == nil ||

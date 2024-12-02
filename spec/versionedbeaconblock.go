@@ -74,7 +74,7 @@ func (v *VersionedBeaconBlock) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Slot, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return 0, errors.New("no electra block")
 		}
@@ -133,7 +133,7 @@ func (v *VersionedBeaconBlock) RandaoReveal() (phase0.BLSSignature, error) {
 		}
 
 		return v.Deneb.Body.RANDAOReveal, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.BLSSignature{}, errors.New("no electra block")
 		}
@@ -195,7 +195,7 @@ func (v *VersionedBeaconBlock) Graffiti() ([32]byte, error) {
 		}
 
 		return v.Deneb.Body.Graffiti, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return [32]byte{}, errors.New("no electra block")
 		}
@@ -242,7 +242,7 @@ func (v *VersionedBeaconBlock) ProposerIndex() (phase0.ValidatorIndex, error) {
 		}
 
 		return v.Deneb.ProposerIndex, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return 0, errors.New("no electra block")
 		}
@@ -286,7 +286,7 @@ func (v *VersionedBeaconBlock) Root() (phase0.Root, error) {
 		}
 
 		return v.Deneb.HashTreeRoot()
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -345,7 +345,7 @@ func (v *VersionedBeaconBlock) BodyRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Body.HashTreeRoot()
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -392,7 +392,7 @@ func (v *VersionedBeaconBlock) ParentRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.ParentRoot, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -436,7 +436,7 @@ func (v *VersionedBeaconBlock) StateRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.StateRoot, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -520,7 +520,7 @@ func (v *VersionedBeaconBlock) Attestations() ([]VersionedAttestation, error) {
 		}
 
 		return versionedAttestations, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil || v.Electra.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -528,7 +528,7 @@ func (v *VersionedBeaconBlock) Attestations() ([]VersionedAttestation, error) {
 		versionedAttestations := make([]VersionedAttestation, len(v.Electra.Body.Attestations))
 		for i, attestation := range v.Electra.Body.Attestations {
 			versionedAttestations[i] = VersionedAttestation{
-				Version: DataVersionElectra,
+				Version: DataVersionAlpaca,
 				Electra: attestation,
 			}
 		}
@@ -612,7 +612,7 @@ func (v *VersionedBeaconBlock) AttesterSlashings() ([]VersionedAttesterSlashing,
 		}
 
 		return versionedAttesterSlashings, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil || v.Electra.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -620,7 +620,7 @@ func (v *VersionedBeaconBlock) AttesterSlashings() ([]VersionedAttesterSlashing,
 		versionedAttesterSlashings := make([]VersionedAttesterSlashing, len(v.Electra.Body.AttesterSlashings))
 		for i, attesterSlashing := range v.Electra.Body.AttesterSlashings {
 			versionedAttesterSlashings[i] = VersionedAttesterSlashing{
-				Version: DataVersionElectra,
+				Version: DataVersionAlpaca,
 				Electra: attesterSlashing,
 			}
 		}
@@ -664,7 +664,7 @@ func (v *VersionedBeaconBlock) ProposerSlashings() ([]*phase0.ProposerSlashing, 
 		}
 
 		return v.Deneb.Body.ProposerSlashings, nil
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil || v.Electra.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -708,7 +708,7 @@ func (v *VersionedBeaconBlock) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionElectra:
+	case DataVersionAlpaca:
 		if v.Electra == nil {
 			return ""
 		}
