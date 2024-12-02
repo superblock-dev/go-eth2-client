@@ -82,10 +82,6 @@ func TestConsensusSpec(t *testing.T) {
 			s:    &deneb.BlobSidecar{},
 		},
 		{
-			name: "BLSToExecutionChange",
-			s:    &capella.BLSToExecutionChange{},
-		},
-		{
 			name: "Checkpoint",
 			s:    &phase0.Checkpoint{},
 		},
@@ -152,10 +148,6 @@ func TestConsensusSpec(t *testing.T) {
 		{
 			name: "SignedBeaconBlockHeader",
 			s:    &phase0.SignedBeaconBlockHeader{},
-		},
-		{
-			name: "SignedBLSToExecutionChange",
-			s:    &capella.SignedBLSToExecutionChange{},
 		},
 		{
 			name: "SignedContributionAndProof",
