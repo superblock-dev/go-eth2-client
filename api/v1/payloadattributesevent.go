@@ -142,13 +142,13 @@ type payloadAttributesV3JSON struct {
 
 // payloadAttributesV4JSON is the spec representation of the payload attributes v4.
 type payloadAttributesV4JSON struct {
-	Timestamp             string                          `json:"timestamp"`
-	PrevRandao            string                          `json:"prev_randao"`
-	SuggestedFeeRecipient string                          `json:"suggested_fee_recipient"`
-	Withdrawals           []*capella.Withdrawal           `json:"withdrawals"`
-	ParentBeaconBlockRoot string                          `json:"parent_beacon_block_root"`
-	DepositRequests       []*electra.DepositRequest       `json:"deposit_requests"`
-	WithdrawalRequests    []*electra.WithdrawalRequest    `json:"withdrawal_requests"`
+	Timestamp             string                       `json:"timestamp"`
+	PrevRandao            string                       `json:"prev_randao"`
+	SuggestedFeeRecipient string                       `json:"suggested_fee_recipient"`
+	Withdrawals           []*capella.Withdrawal        `json:"withdrawals"`
+	ParentBeaconBlockRoot string                       `json:"parent_beacon_block_root"`
+	DepositRequests       []*electra.DepositRequest    `json:"deposit_requests"`
+	WithdrawalRequests    []*electra.WithdrawalRequest `json:"withdrawal_requests"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
