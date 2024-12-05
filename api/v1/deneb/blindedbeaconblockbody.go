@@ -17,7 +17,6 @@ import (
 	"fmt"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/goccy/go-yaml"
@@ -35,8 +34,7 @@ type BlindedBeaconBlockBody struct {
 	VoluntaryExits         []*phase0.SignedVoluntaryExit `ssz-max:"16"`
 	SyncAggregate          *altair.SyncAggregate
 	ExecutionPayloadHeader *deneb.ExecutionPayloadHeader
-	BLSToExecutionChanges  []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
-	BlobKZGCommitments     []deneb.KZGCommitment                 `ssz-max:"4096" ssz-size:"?,48"`
+	BlobKZGCommitments     []deneb.KZGCommitment `ssz-max:"4096" ssz-size:"?,48"`
 }
 
 // String returns a string version of the structure.

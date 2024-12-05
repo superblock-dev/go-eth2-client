@@ -22,7 +22,6 @@ import (
 	"github.com/attestantio/go-eth2-client/spec/electra"
 
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 	"github.com/pkg/errors"
@@ -30,19 +29,18 @@ import (
 
 // blindedBeaconBlockBodyJSON is the spec representation of the struct.
 type blindedBeaconBlockBodyJSON struct {
-	RANDAOReveal           string                                `json:"randao_reveal"`
-	ETH1Data               *phase0.ETH1Data                      `json:"eth1_data"`
-	Graffiti               string                                `json:"graffiti"`
-	ProposerSlashings      []*phase0.ProposerSlashing            `json:"proposer_slashings"`
-	AttesterSlashings      []*electra.AttesterSlashing           `json:"attester_slashings"`
-	Attestations           []*electra.Attestation                `json:"attestations"`
-	Deposits               []*phase0.Deposit                     `json:"deposits"`
-	VoluntaryExits         []*phase0.SignedVoluntaryExit         `json:"voluntary_exits"`
-	SyncAggregate          *altair.SyncAggregate                 `json:"sync_aggregate"`
-	ExecutionPayloadHeader *deneb.ExecutionPayloadHeader         `json:"execution_payload_header"`
-	BLSToExecutionChanges  []*capella.SignedBLSToExecutionChange `json:"bls_to_execution_changes"`
-	BlobKZGCommitments     []string                              `json:"blob_kzg_commitments"`
-	ExecutionRequests      *electra.ExecutionRequests            `json:"execution_requests"`
+	RANDAOReveal           string                        `json:"randao_reveal"`
+	ETH1Data               *phase0.ETH1Data              `json:"eth1_data"`
+	Graffiti               string                        `json:"graffiti"`
+	ProposerSlashings      []*phase0.ProposerSlashing    `json:"proposer_slashings"`
+	AttesterSlashings      []*electra.AttesterSlashing   `json:"attester_slashings"`
+	Attestations           []*electra.Attestation        `json:"attestations"`
+	Deposits               []*phase0.Deposit             `json:"deposits"`
+	VoluntaryExits         []*phase0.SignedVoluntaryExit `json:"voluntary_exits"`
+	SyncAggregate          *altair.SyncAggregate         `json:"sync_aggregate"`
+	ExecutionPayloadHeader *deneb.ExecutionPayloadHeader `json:"execution_payload_header"`
+	BlobKZGCommitments     []string                      `json:"blob_kzg_commitments"`
+	ExecutionRequests      *electra.ExecutionRequests    `json:"execution_requests"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -63,7 +61,6 @@ func (b *BlindedBeaconBlockBody) MarshalJSON() ([]byte, error) {
 		VoluntaryExits:         b.VoluntaryExits,
 		SyncAggregate:          b.SyncAggregate,
 		ExecutionPayloadHeader: b.ExecutionPayloadHeader,
-		BLSToExecutionChanges:  b.BLSToExecutionChanges,
 		BlobKZGCommitments:     blobKZGCommitments,
 		ExecutionRequests:      b.ExecutionRequests,
 	})
@@ -160,16 +157,6 @@ func (b *BlindedBeaconBlockBody) unpack(data *blindedBeaconBlockBodyJSON) error 
 		return errors.New("execution payload header missing")
 	}
 	b.ExecutionPayloadHeader = data.ExecutionPayloadHeader
-	if data.BLSToExecutionChanges == nil {
-		b.BLSToExecutionChanges = make([]*capella.SignedBLSToExecutionChange, 0)
-	} else {
-		for i := range data.BLSToExecutionChanges {
-			if data.BLSToExecutionChanges[i] == nil {
-				return fmt.Errorf("bls to execution changes entry %d missing", i)
-			}
-		}
-		b.BLSToExecutionChanges = data.BLSToExecutionChanges
-	}
 	if data.BlobKZGCommitments == nil {
 		return errors.New("blob KZG commitments missing")
 	}

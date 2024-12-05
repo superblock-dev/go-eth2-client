@@ -135,7 +135,7 @@ func (s *Service) beaconStateFromSSZ(ctx context.Context, res *httpResponse) (*a
 		if err != nil {
 			return nil, errors.Join(errors.New("failed to decode deneb beacon state"), err)
 		}
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		response.Data.Electra = &electra.BeaconState{}
 		if s.customSpecSupport {
 			err = dynSSZ.UnmarshalSSZ(response.Data.Electra, res.body)
@@ -171,7 +171,7 @@ func (*Service) beaconStateFromJSON(res *httpResponse) (*api.Response[*spec.Vers
 		response.Data.Capella, response.Metadata, err = decodeJSONResponse(bytes.NewReader(res.body), &capella.BeaconState{})
 	case spec.DataVersionDeneb:
 		response.Data.Deneb, response.Metadata, err = decodeJSONResponse(bytes.NewReader(res.body), &deneb.BeaconState{})
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		response.Data.Electra, response.Metadata, err = decodeJSONResponse(bytes.NewReader(res.body), &electra.BeaconState{})
 	default:
 		err = fmt.Errorf("unsupported version %s", res.consensusVersion)

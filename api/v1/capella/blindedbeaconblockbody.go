@@ -34,7 +34,6 @@ type BlindedBeaconBlockBody struct {
 	VoluntaryExits         []*phase0.SignedVoluntaryExit `ssz-max:"16"`
 	SyncAggregate          *altair.SyncAggregate
 	ExecutionPayloadHeader *capella.ExecutionPayloadHeader
-	BLSToExecutionChanges  []*capella.SignedBLSToExecutionChange `ssz-max:"16"`
 }
 
 // String returns a string version of the structure.

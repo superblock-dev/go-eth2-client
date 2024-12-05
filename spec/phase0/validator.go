@@ -34,7 +34,7 @@ type Validator struct {
 	ActivationEligibilityEpoch Epoch
 	ActivationEpoch            Epoch
 	ExitEpoch                  Epoch
-	WithdrawableEpoch          Epoch
+	PrincipalBalance           Gwei
 }
 
 // validatorJSON is the spec representation of the struct.
@@ -46,7 +46,7 @@ type validatorJSON struct {
 	ActivationEligibilityEpoch string `json:"activation_eligibility_epoch"`
 	ActivationEpoch            string `json:"activation_epoch"`
 	ExitEpoch                  string `json:"exit_epoch"`
-	WithdrawableEpoch          string `json:"withdrawable_epoch"`
+	PrincipalBalance           string `json:"principal_balance"`
 }
 
 // validatorYAML is the spec representation of the struct.
@@ -58,7 +58,7 @@ type validatorYAML struct {
 	ActivationEligibilityEpoch uint64 `yaml:"activation_eligibility_epoch"`
 	ActivationEpoch            uint64 `yaml:"activation_epoch"`
 	ExitEpoch                  uint64 `yaml:"exit_epoch"`
-	WithdrawableEpoch          uint64 `yaml:"withdrawable_epoch"`
+	PrincipalBalance           uint64 `json:"principal_balance"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -71,7 +71,7 @@ func (v *Validator) MarshalJSON() ([]byte, error) {
 		ActivationEligibilityEpoch: fmt.Sprintf("%d", v.ActivationEligibilityEpoch),
 		ActivationEpoch:            fmt.Sprintf("%d", v.ActivationEpoch),
 		ExitEpoch:                  fmt.Sprintf("%d", v.ExitEpoch),
-		WithdrawableEpoch:          fmt.Sprintf("%d", v.WithdrawableEpoch),
+		PrincipalBalance:           fmt.Sprintf("%d", v.PrincipalBalance),
 	})
 }
 
@@ -140,14 +140,14 @@ func (v *Validator) unpack(validatorJSON *validatorJSON) error {
 		return errors.Wrap(err, "invalid value for exit epoch")
 	}
 	v.ExitEpoch = Epoch(exitEpoch)
-	if validatorJSON.WithdrawableEpoch == "" {
-		return errors.New("withdrawable epoch missing")
+	if validatorJSON.PrincipalBalance == "" {
+		return errors.New("principal balance missing")
 	}
-	withdrawableEpoch, err := strconv.ParseUint(validatorJSON.WithdrawableEpoch, 10, 64)
+	principalBalance, err := strconv.ParseUint(validatorJSON.PrincipalBalance, 10, 64)
 	if err != nil {
-		return errors.Wrap(err, "invalid value for withdrawable epoch")
+		return errors.Wrap(err, "invalid value for principal balance")
 	}
-	v.WithdrawableEpoch = Epoch(withdrawableEpoch)
+	v.PrincipalBalance = Gwei(principalBalance)
 
 	return nil
 }
@@ -162,7 +162,7 @@ func (v *Validator) MarshalYAML() ([]byte, error) {
 		ActivationEligibilityEpoch: uint64(v.ActivationEligibilityEpoch),
 		ActivationEpoch:            uint64(v.ActivationEpoch),
 		ExitEpoch:                  uint64(v.ExitEpoch),
-		WithdrawableEpoch:          uint64(v.WithdrawableEpoch),
+		PrincipalBalance:           uint64(v.PrincipalBalance),
 	}, yaml.Flow(true))
 	if err != nil {
 		return nil, err

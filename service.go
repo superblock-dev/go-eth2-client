@@ -21,7 +21,6 @@ import (
 	apiv1 "github.com/attestantio/go-eth2-client/api/v1"
 	"github.com/attestantio/go-eth2-client/spec"
 	"github.com/attestantio/go-eth2-client/spec/altair"
-	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
 )
@@ -267,12 +266,6 @@ type SyncCommitteeContributionProvider interface {
 type SyncCommitteeContributionsSubmitter interface {
 	// SubmitSyncCommitteeContributions submits sync committee contributions.
 	SubmitSyncCommitteeContributions(ctx context.Context, contributionAndProofs []*altair.SignedContributionAndProof) error
-}
-
-// BLSToExecutionChangesSubmitter is the interface for submitting BLS to execution address changes.
-type BLSToExecutionChangesSubmitter interface {
-	// SubmitBLSToExecutionChanges submits BLS to execution address change operations.
-	SubmitBLSToExecutionChanges(ctx context.Context, blsToExecutionChanges []*capella.SignedBLSToExecutionChange) error
 }
 
 // BeaconBlockHeadersProvider is the interface for providing beacon block headers.

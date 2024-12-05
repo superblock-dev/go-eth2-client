@@ -21,7 +21,6 @@ import (
 	"strconv"
 
 	"github.com/attestantio/go-eth2-client/codecs"
-	"github.com/attestantio/go-eth2-client/spec/altair"
 	"github.com/attestantio/go-eth2-client/spec/capella"
 	"github.com/attestantio/go-eth2-client/spec/deneb"
 	"github.com/attestantio/go-eth2-client/spec/phase0"
@@ -37,37 +36,32 @@ type beaconStateJSON struct {
 	LatestBlockHeader      *phase0.BeaconBlockHeader `json:"latest_block_header"`
 	BlockRoots             []phase0.Root             `json:"block_roots"`
 	StateRoots             []phase0.Root             `json:"state_roots"`
-	HistoricalRoots        []phase0.Root             `json:"historical_roots"`
 	RewardAdjustmentFactor string                    `json:"reward_adjustment_factor"`
 	ETH1Data               *phase0.ETH1Data          `json:"eth1_data"`
 	//nolint:staticcheck
-	ETH1DataVotes                 []*phase0.ETH1Data            `json:"eth1_data_votes,allowempty"`
-	ETH1DepositIndex              string                        `json:"eth1_deposit_index"`
-	Validators                    []*phase0.Validator           `json:"validators"`
-	Balances                      []string                      `json:"balances"`
-	PreviousEpochReserve          string                        `json:"previous_epoch_reserve"`
-	CurrentEpochReserve           string                        `json:"current_epoch_reserve"`
-	RANDAOMixes                   []string                      `json:"randao_mixes"`
-	Slashings                     []string                      `json:"slashings"`
-	PreviousEpochParticipation    []string                      `json:"previous_epoch_participation"`
-	CurrentEpochParticipation     []string                      `json:"current_epoch_participation"`
-	JustificationBits             string                        `json:"justification_bits"`
-	PreviousJustifiedCheckpoint   *phase0.Checkpoint            `json:"previous_justified_checkpoint"`
-	CurrentJustifiedCheckpoint    *phase0.Checkpoint            `json:"current_justified_checkpoint"`
-	FinalizedCheckpoint           *phase0.Checkpoint            `json:"finalized_checkpoint"`
-	InactivityScores              []string                      `json:"inactivity_scores"`
-	CurrentSyncCommittee          *altair.SyncCommittee         `json:"current_sync_committee"`
-	NextSyncCommittee             *altair.SyncCommittee         `json:"next_sync_committee"`
-	LatestExecutionPayloadHeader  *deneb.ExecutionPayloadHeader `json:"latest_execution_payload_header"`
-	NextWithdrawalIndex           string                        `json:"next_withdrawal_index"`
-	NextWithdrawalValidatorIndex  string                        `json:"next_withdrawal_validator_index"`
-	HistoricalSummaries           []*capella.HistoricalSummary  `json:"historical_summaries"`
-	DepositRequestsStartIndex     string                        `json:"deposit_requests_start_index"`
-	DepositBalanceToConsume       phase0.Gwei                   `json:"deposit_balance_to_consume"`
-	ExitBalanceToConsume          phase0.Gwei                   `json:"exit_balance_to_consume"`
-	EarliestExitEpoch             phase0.Epoch                  `json:"earliest_exit_epoch"`
-	PendingDeposits               []*PendingDeposit             `json:"pending_deposits"`
-	PendingPartialWithdrawals     []*PendingPartialWithdrawal   `json:"pending_partial_withdrawals"`
+	ETH1DataVotes                []*phase0.ETH1Data            `json:"eth1_data_votes,allowempty"`
+	ETH1DepositIndex             string                        `json:"eth1_deposit_index"`
+	Validators                   []*phase0.Validator           `json:"validators"`
+	Balances                     []string                      `json:"balances"`
+	Reserves                     string                        `json:"reserves"`
+	RANDAOMixes                  []string                      `json:"randao_mixes"`
+	PreviousEpochParticipation   []string                      `json:"previous_epoch_participation"`
+	CurrentEpochParticipation    []string                      `json:"current_epoch_participation"`
+	JustificationBits            string                        `json:"justification_bits"`
+	PreviousJustifiedCheckpoint  *phase0.Checkpoint            `json:"previous_justified_checkpoint"`
+	CurrentJustifiedCheckpoint   *phase0.Checkpoint            `json:"current_justified_checkpoint"`
+	FinalizedCheckpoint          *phase0.Checkpoint            `json:"finalized_checkpoint"`
+	InactivityScores             []string                      `json:"inactivity_scores"`
+	LatestExecutionPayloadHeader *deneb.ExecutionPayloadHeader `json:"latest_execution_payload_header"`
+	NextWithdrawalIndex          string                        `json:"next_withdrawal_index"`
+	NextWithdrawalValidatorIndex string                        `json:"next_withdrawal_validator_index"`
+	HistoricalSummaries          []*capella.HistoricalSummary  `json:"historical_summaries"`
+	DepositRequestsStartIndex    string                        `json:"deposit_requests_start_index"`
+	DepositBalanceToConsume      phase0.Gwei                   `json:"deposit_balance_to_consume"`
+	ExitBalanceToConsume         phase0.Gwei                   `json:"exit_balance_to_consume"`
+	EarliestExitEpoch            phase0.Epoch                  `json:"earliest_exit_epoch"`
+	PendingDeposits              []*PendingDeposit             `json:"pending_deposits"`
+	PendingPartialWithdrawals    []*PendingPartialWithdrawal   `json:"pending_partial_withdrawals"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -79,10 +73,6 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 	randaoMixes := make([]string, len(b.RANDAOMixes))
 	for i := range b.RANDAOMixes {
 		randaoMixes[i] = fmt.Sprintf("%#x", b.RANDAOMixes[i])
-	}
-	slashings := make([]string, len(b.Slashings))
-	for i := range b.Slashings {
-		slashings[i] = fmt.Sprintf("%d", b.Slashings[i])
 	}
 	previousEpochParticipation := make([]string, len(b.PreviousEpochParticipation))
 	for i := range b.PreviousEpochParticipation {
@@ -98,43 +88,38 @@ func (b *BeaconState) MarshalJSON() ([]byte, error) {
 	}
 
 	return json.Marshal(&beaconStateJSON{
-		GenesisTime:                   strconv.FormatUint(b.GenesisTime, 10),
-		GenesisValidatorsRoot:         b.GenesisValidatorsRoot,
-		Slot:                          b.Slot,
-		Fork:                          b.Fork,
-		LatestBlockHeader:             b.LatestBlockHeader,
-		BlockRoots:                    b.BlockRoots,
-		StateRoots:                    b.StateRoots,
-		HistoricalRoots:               b.HistoricalRoots,
-		RewardAdjustmentFactor:        strconv.FormatUint(b.RewardAdjustmentFactor, 10),
-		ETH1Data:                      b.ETH1Data,
-		ETH1DataVotes:                 b.ETH1DataVotes,
-		ETH1DepositIndex:              strconv.FormatUint(b.ETH1DepositIndex, 10),
-		Validators:                    b.Validators,
-		Balances:                      balances,
-		PreviousEpochReserve:          strconv.FormatUint(b.PreviousEpochReserve, 10),
-		CurrentEpochReserve:           strconv.FormatUint(b.CurrentEpochReserve, 10),
-		RANDAOMixes:                   randaoMixes,
-		Slashings:                     slashings,
-		PreviousEpochParticipation:    previousEpochParticipation,
-		CurrentEpochParticipation:     currentEpochParticipation,
-		JustificationBits:             fmt.Sprintf("%#x", b.JustificationBits.Bytes()),
-		PreviousJustifiedCheckpoint:   b.PreviousJustifiedCheckpoint,
-		CurrentJustifiedCheckpoint:    b.CurrentJustifiedCheckpoint,
-		FinalizedCheckpoint:           b.FinalizedCheckpoint,
-		InactivityScores:              inactivityScores,
-		CurrentSyncCommittee:          b.CurrentSyncCommittee,
-		NextSyncCommittee:             b.NextSyncCommittee,
-		LatestExecutionPayloadHeader:  b.LatestExecutionPayloadHeader,
-		NextWithdrawalIndex:           fmt.Sprintf("%d", b.NextWithdrawalIndex),
-		NextWithdrawalValidatorIndex:  fmt.Sprintf("%d", b.NextWithdrawalValidatorIndex),
-		HistoricalSummaries:           b.HistoricalSummaries,
-		DepositRequestsStartIndex:     fmt.Sprintf("%d", b.DepositRequestsStartIndex),
-		DepositBalanceToConsume:       b.DepositBalanceToConsume,
-		ExitBalanceToConsume:          b.ExitBalanceToConsume,
-		EarliestExitEpoch:             b.EarliestExitEpoch,
-		PendingDeposits:               b.PendingDeposits,
-		PendingPartialWithdrawals:     b.PendingPartialWithdrawals,
+		GenesisTime:                  strconv.FormatUint(b.GenesisTime, 10),
+		GenesisValidatorsRoot:        b.GenesisValidatorsRoot,
+		Slot:                         b.Slot,
+		Fork:                         b.Fork,
+		LatestBlockHeader:            b.LatestBlockHeader,
+		BlockRoots:                   b.BlockRoots,
+		StateRoots:                   b.StateRoots,
+		RewardAdjustmentFactor:       strconv.FormatUint(b.RewardAdjustmentFactor, 10),
+		ETH1Data:                     b.ETH1Data,
+		ETH1DataVotes:                b.ETH1DataVotes,
+		ETH1DepositIndex:             strconv.FormatUint(b.ETH1DepositIndex, 10),
+		Validators:                   b.Validators,
+		Balances:                     balances,
+		Reserves:                     strconv.FormatUint(b.Reserves, 10),
+		RANDAOMixes:                  randaoMixes,
+		PreviousEpochParticipation:   previousEpochParticipation,
+		CurrentEpochParticipation:    currentEpochParticipation,
+		JustificationBits:            fmt.Sprintf("%#x", b.JustificationBits.Bytes()),
+		PreviousJustifiedCheckpoint:  b.PreviousJustifiedCheckpoint,
+		CurrentJustifiedCheckpoint:   b.CurrentJustifiedCheckpoint,
+		FinalizedCheckpoint:          b.FinalizedCheckpoint,
+		InactivityScores:             inactivityScores,
+		LatestExecutionPayloadHeader: b.LatestExecutionPayloadHeader,
+		NextWithdrawalIndex:          fmt.Sprintf("%d", b.NextWithdrawalIndex),
+		NextWithdrawalValidatorIndex: fmt.Sprintf("%d", b.NextWithdrawalValidatorIndex),
+		HistoricalSummaries:          b.HistoricalSummaries,
+		DepositRequestsStartIndex:    fmt.Sprintf("%d", b.DepositRequestsStartIndex),
+		DepositBalanceToConsume:      b.DepositBalanceToConsume,
+		ExitBalanceToConsume:         b.ExitBalanceToConsume,
+		EarliestExitEpoch:            b.EarliestExitEpoch,
+		PendingDeposits:              b.PendingDeposits,
+		PendingPartialWithdrawals:    b.PendingPartialWithdrawals,
 	})
 }
 
@@ -178,10 +163,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "state_roots")
 	}
 
-	if err := json.Unmarshal(raw["historical_roots"], &b.HistoricalRoots); err != nil {
-		return errors.Wrap(err, "historical_roots")
-	}
-
 	rewardAdjustmentFactor := string(bytes.Trim(raw["reward_adjustment_factor"], `"`))
 	if b.RewardAdjustmentFactor, err = strconv.ParseUint(rewardAdjustmentFactor, 10, 64); err != nil {
 		return errors.Wrap(err, "reward_adjustment_factor")
@@ -219,22 +200,13 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		return errors.Wrap(err, "balances")
 	}
 
-	previousEpochReserve := string(bytes.Trim(raw["previous_epoch_reserve"], `"`))
-	if b.PreviousEpochReserve, err = strconv.ParseUint(previousEpochReserve, 10, 64); err != nil {
-		return errors.Wrap(err, "previous_epoch_reserve")
-	}
-
-	currentEpochReserve := string(bytes.Trim(raw["current_epoch_reserve"], `"`))
-	if b.CurrentEpochReserve, err = strconv.ParseUint(currentEpochReserve, 10, 64); err != nil {
-		return errors.Wrap(err, "current_epoch_reserve")
+	reserves := string(bytes.Trim(raw["reserves"], `"`))
+	if b.Reserves, err = strconv.ParseUint(reserves, 10, 64); err != nil {
+		return errors.Wrap(err, "reserves")
 	}
 
 	if err := json.Unmarshal(raw["randao_mixes"], &b.RANDAOMixes); err != nil {
 		return errors.Wrap(err, "randao_mixes")
-	}
-
-	if err := json.Unmarshal(raw["slashings"], &b.Slashings); err != nil {
-		return errors.Wrap(err, "slashings")
 	}
 
 	if err := json.Unmarshal(raw["previous_epoch_participation"], &b.PreviousEpochParticipation); err != nil {
@@ -277,16 +249,6 @@ func (b *BeaconState) UnmarshalJSON(input []byte) error {
 		if b.InactivityScores[i], err = strconv.ParseUint(inactivityScores[i], 10, 64); err != nil {
 			return errors.Wrap(err, fmt.Sprintf("invalid value for inactivity score %d", i))
 		}
-	}
-
-	b.CurrentSyncCommittee = &altair.SyncCommittee{}
-	if err := b.CurrentSyncCommittee.UnmarshalJSON(raw["current_sync_committee"]); err != nil {
-		return errors.Wrap(err, "current_sync_committee")
-	}
-
-	b.NextSyncCommittee = &altair.SyncCommittee{}
-	if err := b.NextSyncCommittee.UnmarshalJSON(raw["next_sync_committee"]); err != nil {
-		return errors.Wrap(err, "next_sync_committee")
 	}
 
 	b.LatestExecutionPayloadHeader = &deneb.ExecutionPayloadHeader{}

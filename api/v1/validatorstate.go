@@ -172,6 +172,15 @@ func ValidatorToState(validator *phase0.Validator,
 		return ValidatorStateUnknown
 	}
 
+	var withdrawableEpoch phase0.Epoch
+	if validator.ExitEpoch == farFutureEpoch {
+		withdrawableEpoch = farFutureEpoch
+	} else if validator.Slashed {
+		withdrawableEpoch = validator.ExitEpoch + 8192 // MIN_SLASHING_WITHDRAWABLE_DELAY
+	} else {
+		withdrawableEpoch = validator.ExitEpoch + 256 // MIN_VALIDATOR_WITHDRAWABILITY_DELAY
+	}
+
 	switch {
 	case validator.ActivationEpoch > currentEpoch:
 		// Pending.
@@ -190,7 +199,7 @@ func ValidatorToState(validator *phase0.Validator,
 		}
 
 		return ValidatorStateActiveExiting
-	case validator.WithdrawableEpoch > currentEpoch:
+	case withdrawableEpoch > currentEpoch:
 		// Exited.
 		if validator.Slashed {
 			return ValidatorStateExitedSlashed

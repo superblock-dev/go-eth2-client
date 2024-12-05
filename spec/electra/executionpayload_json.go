@@ -30,25 +30,25 @@ import (
 
 // executionPayloadJSON is the spec representation of the struct.
 type executionPayloadJSON struct {
-	ParentHash            phase0.Hash32              `json:"parent_hash"`
-	FeeRecipient          bellatrix.ExecutionAddress `json:"fee_recipient"`
-	StateRoot             phase0.Root                `json:"state_root"`
-	ReceiptsRoot          phase0.Root                `json:"receipts_root"`
-	LogsBloom             string                     `json:"logs_bloom"`
-	PrevRandao            string                     `json:"prev_randao"`
-	BlockNumber           string                     `json:"block_number"`
-	GasLimit              string                     `json:"gas_limit"`
-	GasUsed               string                     `json:"gas_used"`
-	Timestamp             string                     `json:"timestamp"`
-	ExtraData             string                     `json:"extra_data"`
-	BaseFeePerGas         string                     `json:"base_fee_per_gas"`
-	BlockHash             phase0.Hash32              `json:"block_hash"`
-	Transactions          []string                   `json:"transactions"`
-	Withdrawals           []*capella.Withdrawal      `json:"withdrawals"`
-	BlobGasUsed           string                     `json:"blob_gas_used"`
-	ExcessBlobGas         string                     `json:"excess_blob_gas"`
-	DepositRequests       []*DepositRequest          `json:"deposit_requests"`
-	WithdrawalRequests    []*WithdrawalRequest       `json:"withdrawal_requests"`
+	ParentHash         phase0.Hash32              `json:"parent_hash"`
+	FeeRecipient       bellatrix.ExecutionAddress `json:"fee_recipient"`
+	StateRoot          phase0.Root                `json:"state_root"`
+	ReceiptsRoot       phase0.Root                `json:"receipts_root"`
+	LogsBloom          string                     `json:"logs_bloom"`
+	PrevRandao         string                     `json:"prev_randao"`
+	BlockNumber        string                     `json:"block_number"`
+	GasLimit           string                     `json:"gas_limit"`
+	GasUsed            string                     `json:"gas_used"`
+	Timestamp          string                     `json:"timestamp"`
+	ExtraData          string                     `json:"extra_data"`
+	BaseFeePerGas      string                     `json:"base_fee_per_gas"`
+	BlockHash          phase0.Hash32              `json:"block_hash"`
+	Transactions       []string                   `json:"transactions"`
+	Withdrawals        []*capella.Withdrawal      `json:"withdrawals"`
+	BlobGasUsed        string                     `json:"blob_gas_used"`
+	ExcessBlobGas      string                     `json:"excess_blob_gas"`
+	DepositRequests    []*DepositRequest          `json:"deposit_requests"`
+	WithdrawalRequests []*WithdrawalRequest       `json:"withdrawal_requests"`
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -266,6 +266,6 @@ func (e *ExecutionPayload) UnmarshalJSON(input []byte) error {
 			return fmt.Errorf("withdraw requests entry %d missing", i)
 		}
 	}
-	
+
 	return nil
 }

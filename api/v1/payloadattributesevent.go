@@ -142,13 +142,13 @@ type payloadAttributesV3JSON struct {
 
 // payloadAttributesV4JSON is the spec representation of the payload attributes v4.
 type payloadAttributesV4JSON struct {
-	Timestamp             string                          `json:"timestamp"`
-	PrevRandao            string                          `json:"prev_randao"`
-	SuggestedFeeRecipient string                          `json:"suggested_fee_recipient"`
-	Withdrawals           []*capella.Withdrawal           `json:"withdrawals"`
-	ParentBeaconBlockRoot string                          `json:"parent_beacon_block_root"`
-	DepositRequests       []*electra.DepositRequest       `json:"deposit_requests"`
-	WithdrawalRequests    []*electra.WithdrawalRequest    `json:"withdrawal_requests"`
+	Timestamp             string                       `json:"timestamp"`
+	PrevRandao            string                       `json:"prev_randao"`
+	SuggestedFeeRecipient string                       `json:"suggested_fee_recipient"`
+	Withdrawals           []*capella.Withdrawal        `json:"withdrawals"`
+	ParentBeaconBlockRoot string                       `json:"parent_beacon_block_root"`
+	DepositRequests       []*electra.DepositRequest    `json:"deposit_requests"`
+	WithdrawalRequests    []*electra.WithdrawalRequest `json:"withdrawal_requests"`
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -462,7 +462,7 @@ func (e *PayloadAttributesEvent) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to marshal payload attributes v3")
 		}
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		if e.Data.V4 == nil {
 			return nil, errors.New("no payload attributes v4 data")
 		}
@@ -592,7 +592,7 @@ func (e *PayloadAttributesEvent) unpack(data *payloadAttributesEventJSON) error 
 			return err
 		}
 		e.Data.V3 = &payloadAttributes
-	case spec.DataVersionElectra:
+	case spec.DataVersionAlpaca:
 		var payloadAttributes PayloadAttributesV4
 		err = json.Unmarshal(data.Data.PayloadAttributes, &payloadAttributes)
 		if err != nil {
