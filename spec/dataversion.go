@@ -36,6 +36,8 @@ const (
 	DataVersionDeneb
 	// DataVersionAlpaca is data applicable for the Electra release of the beacon chain.
 	DataVersionAlpaca
+	// DataVersionBadger is data applicable for the Badger release of the beacon chain.
+	DataVersionBadger
 )
 
 var dataVersionStrings = [...]string{
@@ -46,6 +48,7 @@ var dataVersionStrings = [...]string{
 	"capella",
 	"deneb",
 	"alpaca",
+	"badger",
 }
 
 // MarshalJSON implements json.Marshaler.
@@ -69,6 +72,8 @@ func (d *DataVersion) UnmarshalJSON(input []byte) error {
 		*d = DataVersionDeneb
 	case `"alpaca"`:
 		*d = DataVersionAlpaca
+	case `"badger"`:
+		*d = DataVersionBadger
 	default:
 		err = fmt.Errorf("unrecognised data version %s", string(input))
 	}

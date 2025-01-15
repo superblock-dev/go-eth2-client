@@ -218,7 +218,7 @@ func (s *Service) beaconBlockProposalFromSSZ(ctx context.Context,
 				err = response.Data.Deneb.UnmarshalSSZ(res.body)
 			}
 		}
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if response.Data.Blinded {
 			response.Data.ElectraBlinded = &apiv1electra.BlindedBeaconBlock{}
 			if s.customSpecSupport {
@@ -309,7 +309,7 @@ func (s *Service) beaconBlockProposalFromJSON(res *httpResponse) (*api.Response[
 				&apiv1deneb.BlockContents{},
 			)
 		}
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if response.Data.Blinded {
 			response.Data.ElectraBlinded, response.Metadata, err = decodeJSONResponse(
 				bytes.NewReader(res.body),

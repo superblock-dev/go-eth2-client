@@ -49,7 +49,7 @@ func (s *Service) SubmitBeaconBlock(ctx context.Context, block *spec.VersionedSi
 		specJSON, err = json.Marshal(block.Capella)
 	case spec.DataVersionDeneb:
 		specJSON, err = json.Marshal(block.Deneb)
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		specJSON, err = json.Marshal(block.Electra)
 	default:
 		err = errors.New("unknown block version")

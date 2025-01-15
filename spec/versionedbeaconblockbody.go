@@ -66,7 +66,7 @@ func (v *VersionedBeaconBlockBody) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}

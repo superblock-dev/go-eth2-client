@@ -462,7 +462,7 @@ func (e *PayloadAttributesEvent) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, errors.Wrap(err, "failed to marshal payload attributes v3")
 		}
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if e.Data.V4 == nil {
 			return nil, errors.New("no payload attributes v4 data")
 		}
@@ -592,7 +592,7 @@ func (e *PayloadAttributesEvent) unpack(data *payloadAttributesEventJSON) error 
 			return err
 		}
 		e.Data.V3 = &payloadAttributes
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		var payloadAttributes PayloadAttributesV4
 		err = json.Unmarshal(data.Data.PayloadAttributes, &payloadAttributes)
 		if err != nil {

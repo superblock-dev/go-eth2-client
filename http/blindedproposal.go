@@ -141,7 +141,7 @@ func (*Service) blindedProposalFromSSZ(res *httpResponse) (*api.Response[*api.Ve
 		if err := response.Data.Deneb.UnmarshalSSZ(res.body); err != nil {
 			return nil, errors.Join(errors.New("failed to decode deneb blinded beacon block proposal"), err)
 		}
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		response.Data.Electra = &apiv1electra.BlindedBeaconBlock{}
 		if err := response.Data.Electra.UnmarshalSSZ(res.body); err != nil {
 			return nil, errors.Join(errors.New("failed to decode electra blinded beacon block proposal"), err)
@@ -177,7 +177,7 @@ func (*Service) blindedProposalFromJSON(res *httpResponse) (*api.Response[*api.V
 			bytes.NewReader(res.body),
 			&apiv1deneb.BlindedBeaconBlock{},
 		)
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		response.Data.Electra, response.Metadata, err = decodeJSONResponse(
 			bytes.NewReader(res.body),
 			&apiv1electra.BlindedBeaconBlock{},

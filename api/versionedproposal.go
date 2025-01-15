@@ -90,7 +90,7 @@ func (v *VersionedProposal) BodyRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Block.Body.HashTreeRoot()
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Body.HashTreeRoot()
 		}
@@ -130,7 +130,7 @@ func (v *VersionedProposal) ParentRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Block.ParentRoot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.ParentRoot, nil
 		}
@@ -170,7 +170,7 @@ func (v *VersionedProposal) ProposerIndex() (phase0.ValidatorIndex, error) {
 		}
 
 		return v.Deneb.Block.ProposerIndex, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.ProposerIndex, nil
 		}
@@ -210,7 +210,7 @@ func (v *VersionedProposal) Root() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Block.HashTreeRoot()
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.HashTreeRoot()
 		}
@@ -250,7 +250,7 @@ func (v *VersionedProposal) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Block.Slot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Slot, nil
 		}
@@ -290,7 +290,7 @@ func (v *VersionedProposal) StateRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Block.StateRoot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.StateRoot, nil
 		}
@@ -394,7 +394,7 @@ func (v *VersionedProposal) Attestations() ([]spec.VersionedAttestation, error) 
 		}
 
 		return versionedAttestations, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			versionedAttestations := make([]spec.VersionedAttestation, len(v.ElectraBlinded.Body.Attestations))
 			for i, attestation := range v.ElectraBlinded.Body.Attestations {
@@ -450,7 +450,7 @@ func (v *VersionedProposal) Graffiti() ([32]byte, error) {
 		}
 
 		return v.Deneb.Block.Body.Graffiti, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Body.Graffiti, nil
 		}
@@ -490,7 +490,7 @@ func (v *VersionedProposal) RandaoReveal() (phase0.BLSSignature, error) {
 		}
 
 		return v.Deneb.Block.Body.RANDAOReveal, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Body.RANDAOReveal, nil
 		}
@@ -526,7 +526,7 @@ func (v *VersionedProposal) Transactions() ([]bellatrix.Transaction, error) {
 		}
 
 		return v.Deneb.Block.Body.ExecutionPayload.Transactions, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return nil, ErrDataMissing
 		}
@@ -562,7 +562,7 @@ func (v *VersionedProposal) FeeRecipient() (bellatrix.ExecutionAddress, error) {
 		}
 
 		return v.Deneb.Block.Body.ExecutionPayload.FeeRecipient, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Body.ExecutionPayloadHeader.FeeRecipient, nil
 		}
@@ -598,7 +598,7 @@ func (v *VersionedProposal) Timestamp() (uint64, error) {
 		}
 
 		return v.Deneb.Block.Body.ExecutionPayload.Timestamp, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded.Body.ExecutionPayloadHeader.Timestamp, nil
 		}
@@ -622,7 +622,7 @@ func (v *VersionedProposal) Blobs() ([]deneb.Blob, error) {
 		}
 
 		return v.Deneb.Blobs, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return nil, ErrDataMissing
 		}
@@ -646,7 +646,7 @@ func (v *VersionedProposal) KZGProofs() ([]deneb.KZGProof, error) {
 		}
 
 		return v.Deneb.KZGProofs, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return nil, ErrDataMissing
 		}
@@ -703,7 +703,7 @@ func (v *VersionedProposal) String() string {
 		}
 
 		return v.Deneb.String()
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}
@@ -738,7 +738,7 @@ func (v *VersionedProposal) proposalPresent() bool {
 		}
 
 		return v.Deneb.Block != nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded != nil
 		}
@@ -773,7 +773,7 @@ func (v *VersionedProposal) bodyPresent() bool {
 		}
 
 		return v.Deneb != nil && v.Deneb.Block != nil && v.Deneb.Block.Body != nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded != nil && v.ElectraBlinded.Body != nil
 		}
@@ -810,7 +810,7 @@ func (v *VersionedProposal) payloadPresent() bool {
 		}
 
 		return v.Deneb != nil && v.Deneb.Block != nil && v.Deneb.Block.Body != nil && v.Deneb.Block.Body.ExecutionPayload != nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Blinded {
 			return v.ElectraBlinded != nil && v.ElectraBlinded.Body != nil && v.ElectraBlinded.Body.ExecutionPayloadHeader != nil
 		}

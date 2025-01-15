@@ -73,7 +73,7 @@ func (v *VersionedBeaconState) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Slot, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -101,7 +101,7 @@ func (v *VersionedBeaconState) NextWithdrawalValidatorIndex() (phase0.ValidatorI
 		}
 
 		return v.Deneb.NextWithdrawalValidatorIndex, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -145,7 +145,7 @@ func (v *VersionedBeaconState) Validators() ([]*phase0.Validator, error) {
 		}
 
 		return v.Deneb.Validators, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra state")
 		}
@@ -189,7 +189,7 @@ func (v *VersionedBeaconState) ValidatorBalances() ([]phase0.Gwei, error) {
 		}
 
 		return v.Deneb.Balances, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra state")
 		}
@@ -205,7 +205,7 @@ func (v *VersionedBeaconState) DepositRequestsStartIndex() (uint64, error) {
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return 0, errors.New("state does not provide deposit requests start index")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -221,7 +221,7 @@ func (v *VersionedBeaconState) DepositBalanceToConsume() (phase0.Gwei, error) {
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return 0, errors.New("state does not provide deposit balance to consume")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -237,7 +237,7 @@ func (v *VersionedBeaconState) ExitBalanceToConsume() (phase0.Gwei, error) {
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return 0, errors.New("state does not provide exit balance to consume")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -253,7 +253,7 @@ func (v *VersionedBeaconState) EarliestExitEpoch() (phase0.Epoch, error) {
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return 0, errors.New("state does not provide earliest exit epoch")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return 0, errors.New("no Electra state")
 		}
@@ -269,7 +269,7 @@ func (v *VersionedBeaconState) PendingDeposits() ([]*electra.PendingDeposit, err
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return nil, errors.New("state does not provide pending deposits")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra state")
 		}
@@ -285,7 +285,7 @@ func (v *VersionedBeaconState) PendingPartialWithdrawals() ([]*electra.PendingPa
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return nil, errors.New("state does not provide pending partial withdrawals")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra state")
 		}
@@ -329,7 +329,7 @@ func (v *VersionedBeaconState) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}

@@ -55,7 +55,7 @@ func (v *VersionedSignedBlindedProposal) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Message.Slot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return 0, ErrDataMissing
@@ -118,7 +118,7 @@ func (v *VersionedSignedBlindedProposal) Attestations() ([]spec.VersionedAttesta
 		}
 
 		return versionedAttestations, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -163,7 +163,7 @@ func (v *VersionedSignedBlindedProposal) Root() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.HashTreeRoot()
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil {
 			return phase0.Root{}, ErrDataMissing
 		}
@@ -201,7 +201,7 @@ func (v *VersionedSignedBlindedProposal) BodyRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.Body.HashTreeRoot()
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -238,7 +238,7 @@ func (v *VersionedSignedBlindedProposal) ParentRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.ParentRoot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return phase0.Root{}, ErrDataMissing
@@ -274,7 +274,7 @@ func (v *VersionedSignedBlindedProposal) StateRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.StateRoot, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return phase0.Root{}, ErrDataMissing
@@ -337,7 +337,7 @@ func (v *VersionedSignedBlindedProposal) AttesterSlashings() ([]spec.VersionedAt
 		}
 
 		return versionedAttesterSlashings, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -385,7 +385,7 @@ func (v *VersionedSignedBlindedProposal) ProposerSlashings() ([]*phase0.Proposer
 		}
 
 		return v.Deneb.Message.Body.ProposerSlashings, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -422,7 +422,7 @@ func (v *VersionedSignedBlindedProposal) ProposerIndex() (phase0.ValidatorIndex,
 		}
 
 		return v.Deneb.Message.ProposerIndex, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil {
 			return 0, ErrDataMissing
@@ -464,7 +464,7 @@ func (v *VersionedSignedBlindedProposal) ExecutionBlockHash() (phase0.Hash32, er
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayloadHeader.BlockHash, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -508,7 +508,7 @@ func (v *VersionedSignedBlindedProposal) ExecutionBlockNumber() (uint64, error) 
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayloadHeader.BlockNumber, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -543,7 +543,7 @@ func (v *VersionedSignedBlindedProposal) Signature() (phase0.BLSSignature, error
 		}
 
 		return v.Deneb.Signature, nil
-	case spec.DataVersionAlpaca:
+	case spec.DataVersionAlpaca, spec.DataVersionBadger:
 		if v.Electra == nil {
 			return phase0.BLSSignature{}, ErrDataMissing
 		}

@@ -69,7 +69,7 @@ func (v *VersionedSignedBeaconBlock) Slot() (phase0.Slot, error) {
 		}
 
 		return v.Deneb.Message.Slot, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil {
 			return 0, errors.New("no electra block")
 		}
@@ -113,7 +113,7 @@ func (v *VersionedSignedBeaconBlock) ProposerIndex() (phase0.ValidatorIndex, err
 		}
 
 		return v.Deneb.Message.ProposerIndex, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil {
 			return 0, errors.New("no electra block")
 		}
@@ -151,7 +151,7 @@ func (v *VersionedSignedBeaconBlock) ExecutionBlockHash() (phase0.Hash32, error)
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayload.BlockHash, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -192,7 +192,7 @@ func (v *VersionedSignedBeaconBlock) ExecutionBlockNumber() (uint64, error) {
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayload.BlockNumber, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -237,7 +237,7 @@ func (v *VersionedSignedBeaconBlock) ExecutionTransactions() ([]bellatrix.Transa
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayload.Transactions, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -284,7 +284,7 @@ func (v *VersionedSignedBeaconBlock) Graffiti() ([32]byte, error) {
 		}
 
 		return v.Deneb.Message.Body.Graffiti, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return [32]byte{}, errors.New("no electra block")
 		}
@@ -370,7 +370,7 @@ func (v *VersionedSignedBeaconBlock) Attestations() ([]VersionedAttestation, err
 		}
 
 		return versionedAttestations, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -422,7 +422,7 @@ func (v *VersionedSignedBeaconBlock) Root() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.HashTreeRoot()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -466,7 +466,7 @@ func (v *VersionedSignedBeaconBlock) BodyRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.Body.HashTreeRoot()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -510,7 +510,7 @@ func (v *VersionedSignedBeaconBlock) ParentRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.ParentRoot, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -554,7 +554,7 @@ func (v *VersionedSignedBeaconBlock) StateRoot() (phase0.Root, error) {
 		}
 
 		return v.Deneb.Message.StateRoot, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil {
 			return phase0.Root{}, errors.New("no electra block")
 		}
@@ -598,7 +598,7 @@ func (v *VersionedSignedBeaconBlock) RandaoReveal() (phase0.BLSSignature, error)
 		}
 
 		return v.Deneb.Message.Body.RANDAOReveal, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return phase0.BLSSignature{}, errors.New("no electra block")
 		}
@@ -642,7 +642,7 @@ func (v *VersionedSignedBeaconBlock) ETH1Data() (*phase0.ETH1Data, error) {
 		}
 
 		return v.Deneb.Message.Body.ETH1Data, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -686,7 +686,7 @@ func (v *VersionedSignedBeaconBlock) Deposits() ([]*phase0.Deposit, error) {
 		}
 
 		return v.Deneb.Message.Body.Deposits, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -730,7 +730,7 @@ func (v *VersionedSignedBeaconBlock) VoluntaryExits() ([]*phase0.SignedVoluntary
 		}
 
 		return v.Deneb.Message.Body.VoluntaryExits, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -816,7 +816,7 @@ func (v *VersionedSignedBeaconBlock) AttesterSlashings() ([]VersionedAttesterSla
 		}
 
 		return versionedAttesterSlashings, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -868,7 +868,7 @@ func (v *VersionedSignedBeaconBlock) ProposerSlashings() ([]*phase0.ProposerSlas
 		}
 
 		return v.Deneb.Message.Body.ProposerSlashings, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -903,7 +903,7 @@ func (v *VersionedSignedBeaconBlock) Withdrawals() ([]*capella.Withdrawal, error
 		}
 
 		return v.Deneb.Message.Body.ExecutionPayload.Withdrawals, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil ||
@@ -934,7 +934,7 @@ func (v *VersionedSignedBeaconBlock) BlobKZGCommitments() ([]deneb.KZGCommitment
 		}
 
 		return v.Deneb.Message.Body.BlobKZGCommitments, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil || v.Electra.Message == nil || v.Electra.Message.Body == nil {
 			return nil, errors.New("no electra block")
 		}
@@ -958,7 +958,7 @@ func (v *VersionedSignedBeaconBlock) ExecutionRequests() (*electra.ExecutionRequ
 		return nil, errors.New("capella block does not have execution requests")
 	case DataVersionDeneb:
 		return nil, errors.New("deneb block does not have execution requests")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil ||
 			v.Electra.Message == nil ||
 			v.Electra.Message.Body == nil {
@@ -1004,7 +1004,7 @@ func (v *VersionedSignedBeaconBlock) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}

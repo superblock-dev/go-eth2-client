@@ -94,7 +94,7 @@ func (v *VersionedAttesterSlashing) Attestation1() (*VersionedIndexedAttestation
 		}
 
 		return &versionedIndexedAttestation, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra indexed attestation")
 		}
@@ -168,7 +168,7 @@ func (v *VersionedAttesterSlashing) Attestation2() (*VersionedIndexedAttestation
 		}
 
 		return &versionedIndexedAttestation, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra indexed attestation")
 		}
@@ -217,7 +217,7 @@ func (v *VersionedAttesterSlashing) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}

@@ -71,7 +71,7 @@ func (v *VersionedAttestation) AggregationBits() (bitfield.Bitlist, error) {
 		}
 
 		return v.Deneb.AggregationBits, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra attestation")
 		}
@@ -115,7 +115,7 @@ func (v *VersionedAttestation) Data() (*phase0.AttestationData, error) {
 		}
 
 		return v.Deneb.Data, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra attestation")
 		}
@@ -131,7 +131,7 @@ func (v *VersionedAttestation) CommitteeBits() (bitfield.Bitvector64, error) {
 	switch v.Version {
 	case DataVersionPhase0, DataVersionAltair, DataVersionBellatrix, DataVersionCapella, DataVersionDeneb:
 		return nil, errors.New("attestation does not provide committee bits")
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return nil, errors.New("no Electra attestation")
 		}
@@ -175,7 +175,7 @@ func (v *VersionedAttestation) Signature() (phase0.BLSSignature, error) {
 		}
 
 		return v.Deneb.Signature, nil
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return phase0.BLSSignature{}, errors.New("no Electra attestation")
 		}
@@ -219,7 +219,7 @@ func (v *VersionedAttestation) String() string {
 		}
 
 		return v.Deneb.String()
-	case DataVersionAlpaca:
+	case DataVersionAlpaca, DataVersionBadger:
 		if v.Electra == nil {
 			return ""
 		}
